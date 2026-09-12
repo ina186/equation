@@ -6,21 +6,20 @@
     <title>Математика 2026: Уравнения (Генератор)</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; user-select: none; }
-        body { height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #ffc3a0, #ffafbd, #c9ffbf, #a8e0ff, #e0c3fc); background-size: 400% 400%; animation: gradientBG 15s ease infinite; overflow: hidden; }
+        body { height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #ffc3a0, #ffafbd, #c9ffbf, #a8e0ff, #e0c3fc); background-size: 400% 400%; animation: gradientBG 15s ease infinite; overflow: hidden; position: relative; }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         
-        button { touch-action: none; } /* Важно для мгновенного мультитача */
+        button { touch-action: none; }
 
-        /* Увеличенная игровая панель */
         .glass-panel {
             background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border: 2px solid rgba(255, 255, 255, 0.9); border-radius: 30px;
             box-shadow: 0 0 30px rgba(255, 255, 255, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.6);
-            width: 96vw; max-width: 1200px; height: 96vh; /* Занимает почти всю высоту экрана */
+            width: 96vw; max-width: 1200px; height: 94vh; /* Немного уменьшил высоту, чтобы не перекрывать копирайт */
             padding: 30px; display: flex; flex-direction: column; transition: all 0.5s ease; position: relative;
         }
         .glass-panel.battle-active { 
-            max-width: 1600px; /* Шире для двух игроков */
+            max-width: 1600px; 
             padding: 15px; 
         }
 
@@ -96,7 +95,6 @@
         }
         .option-btn:active { transform: scale(0.95); }
 
-        /* Элементы равномерно распределяются по высоте */
         .battle-mode .game-layout { flex-direction: column; justify-content: space-evenly; overflow: hidden; }
         .battle-mode .left-panel { border-right: none; border-bottom: 2px dashed rgba(255,255,255,0.5); padding: 5px; flex: 1; width: 100%; justify-content: space-evenly;}
         .battle-mode .right-panel { width: 100%; padding: 5px; justify-content: space-evenly; flex: 1;}
@@ -116,9 +114,22 @@
         .exit-btn {
             position: absolute; top: 15px; right: 15px; background: rgba(255, 175, 189, 0.8); border: 2px solid #fff;
             border-radius: 15px; padding: 10px 20px; font-size: 1.2rem; font-weight: bold; color: #0f172a; cursor: pointer;
-            box-shadow: 0 0 10px rgba(255,255,255,0.5); z-index: 10; display: none;
+            box-shadow: 0 0 10px rgba(255,255,255,0.5); z-index: 10; display: block;
         }
         .exit-btn:active { transform: scale(0.95); }
+
+        /* Стиль для копирайта */
+        .copyright {
+            position: absolute;
+            bottom: 8px;
+            width: 100%;
+            text-align: center;
+            font-size: 1rem;
+            color: rgba(51, 65, 85, 0.6);
+            font-weight: 600;
+            pointer-events: none; /* Чтобы текст не мешал нажимать куда-либо */
+            z-index: 5;
+        }
     </style>
 </head>
 <body>
@@ -136,13 +147,12 @@
                 <button class="glass-btn mode-btn arcade" onpointerdown="startGame('arcade')">Аркада (∞)</button>
             </div>
             <div class="battle-section">
-                <!-- Время баттла изменено на 2 минуты -->
                 <button class="glass-btn battle-btn" onpointerdown="startBattle()">⚔️ БАТТЛ (2 МИН) ⚔️</button>
             </div>
         </div>
 
         <div id="game-screen">
-            <button class="exit-btn" id="exit-arcade-btn" onpointerdown="endGame()">Завершить игру 🛑</button>
+            <button class="exit-btn" id="exit-btn" onpointerdown="resetGame()">Сдаться 🛑</button>
             
             <div id="battle-header" class="battle-header-ui">
                 <div class="timer" id="battle-timer">02:00</div>
@@ -165,6 +175,9 @@
 
     </div>
 
+    <!-- Твой копирайт в самом низу страницы -->
+    <div class="copyright">© 2026 Иванова Наталья Александровна</div>
+
     <script>
         let isBattleMode = false;
         let battleTimerInterval = null;
@@ -176,7 +189,6 @@
         const resultScreen = document.getElementById('result-screen');
         const boardsContainer = document.getElementById('boards-container');
         const battleHeader = document.getElementById('battle-header');
-        const exitArcadeBtn = document.getElementById('exit-arcade-btn');
 
         function generateQuestion() {
             const type = Math.floor(Math.random() * 4);
@@ -317,7 +329,6 @@
             battleHeader.style.display = 'none';
             
             boardsContainer.innerHTML = getBoardHTML('single', false);
-            exitArcadeBtn.style.display = (mode === 'arcade') ? 'block' : 'none';
 
             players = { 'single': createPlayerState(mode) };
             loadQuestion('single');
@@ -330,8 +341,6 @@
             resultScreen.style.display = 'none';
             gameScreen.style.display = 'flex';
             battleHeader.style.display = 'flex';
-            exitArcadeBtn.style.display = 'block';
-            exitArcadeBtn.innerText = "Сдаться 🛑";
 
             boardsContainer.innerHTML = 
                 getBoardHTML('p1', true) + 
@@ -345,7 +354,7 @@
 
             loadQuestion('p1');
             loadQuestion('p2');
-            startTimer(120); // 2 МИНУТЫ (120 секунд)
+            startTimer(120);
         }
 
         function loadQuestion(id) {
@@ -644,19 +653,16 @@
             }
         }
 
-        // НОВАЯ, СПРАВЕДЛИВАЯ СИСТЕМА ПОДСЧЕТА ОЧКОВ
         function showBattleResults() {
             let p1 = players['p1'];
             let p2 = players['p2'];
             
-            // Начисление баллов: +10 за решение, -5 за ошибку
             let p1Pts = (p1.score * 10) - (p1.mistakes * 5);
             let p2Pts = (p2.score * 10) - (p2.mistakes * 5);
             
             let winnerText = "";
             let emoji = "🏆";
             
-            // Сравниваем очки
             if (p1Pts > p2Pts) {
                 winnerText = "Победил Игрок 1 (Слева)!";
                 emoji = "🎉";
@@ -664,7 +670,6 @@
                 winnerText = "Победил Игрок 2 (Справа)!";
                 emoji = "🎉";
             } else {
-                // Если очки равны (ничья), выигрывает тот, у кого меньше ошибок
                 if (p1.mistakes < p2.mistakes) {
                     winnerText = "Победил Игрок 1 (точнее)!";
                 } else if (p2.mistakes < p1.mistakes) {
@@ -678,7 +683,6 @@
             document.getElementById('result-title').innerText = "Время вышло!";
             document.getElementById('result-emoji').innerText = emoji;
             
-            // Выводим очки на экран для прозрачности результата
             document.getElementById('score-block').innerHTML = 
                 `<div style="font-size:2rem; line-height: 1.6; text-align: left; background: rgba(255,255,255,0.6); padding: 20px; border-radius: 20px;">
                     <b>Игрок 1:</b> <span style="color:#15803d">${p1.score}</span> решено | <span style="color:#b91c1c">${p1.mistakes}</span> ошибок 👉 <b>${p1Pts} очков</b><br>

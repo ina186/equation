@@ -75,8 +75,22 @@
         .battle-timer-fill.danger { background: linear-gradient(90deg, #ef4444, #fca5a5); }
         
         .timer-percent {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center;
-            font-weight: 900; font-size: min(1.6rem, 2.5vh); color: #0f172a; text-shadow: 0 0 8px #fff, 0 0 15px #fff; z-index: 10;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; z-index: 10;
+        }
+
+        /* Идеально подогнанные песочные часы */
+        .hourglass { 
+            display: inline-block; 
+            font-size: min(1.5rem, 3vh); /* Чуть меньше высоты бара, чтобы не обрезалось */
+            line-height: 1;
+            animation: flipGlass 4s ease-in-out infinite; 
+        }
+        @keyframes flipGlass {
+            0% { transform: rotate(0deg); }
+            10% { transform: rotate(180deg); }
+            50% { transform: rotate(180deg); }
+            60% { transform: rotate(360deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .exit-btn-global {
@@ -181,16 +195,9 @@
                 width: 100%; padding: 5px 10px; gap: 15px; background: rgba(255,255,255,0.25); border-radius: 20px; margin: 5px 0;
             }
             .mobile-battle-bar .battle-timer-bar { flex: 1; height: 24px; margin: 0; border-width: 2px;}
-            .mobile-battle-bar .timer-percent { font-size: 1.2rem; line-height: 24px; }
+            .mobile-battle-bar .timer-percent { line-height: 24px; }
+            .mobile-battle-bar .hourglass { font-size: 1.1rem; } /* Идеальный размер для узкого мобильного бара */
             
-            .mobile-exit-btn { 
-                background: rgba(255, 255, 255, 0.9); border: 2px solid #fff; border-radius: 50%; 
-                width: 40px; height: 40px; flex-shrink: 0; font-size: 1.4rem; 
-                display: flex; align-items: center; justify-content: center; cursor: pointer; 
-                box-shadow: 0 2px 8px rgba(0,0,0,0.15); padding: 0; line-height: 1; color: #1e293b;
-            }
-            .mobile-exit-btn:active { transform: scale(0.9); }
-
             :not(.battle-mode) > .game-layout { flex-direction: column; justify-content: flex-start;}
             :not(.battle-mode) > .game-layout > .left-panel { border-right: none; border-bottom: 2px dashed rgba(255,255,255,0.5); padding-bottom: 10px; flex: none; height: auto;}
             :not(.battle-mode) > .game-layout > .right-panel { padding-top: 15px; flex: 1; justify-content: flex-start;}
@@ -244,9 +251,9 @@
         <div id="auth-screen" class="screen-container" style="display: none;">
             <div class="emoji-display">🔐</div>
             <h2>Доступ закрыт</h2>
-            <p style="font-size: 1.5rem; margin-bottom: 5px;">Введите код доступа, чтобы начать</p>
-            <div id="auth-error-msg" style="color: #ef4444; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px; height: 20px; opacity: 0; transition: 0.3s;">Неверный код доступа!</div>
-            <input type="text" id="access-code-input" class="name-input" placeholder="Код доступа" autocomplete="off">
+            <p style="font-size: 1.5rem; margin-bottom: 5px;">Введите пароль, чтобы начать</p>
+            <div id="auth-error-msg" style="color: #ef4444; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px; height: 20px; opacity: 0; transition: 0.3s;">Неверный пароль!</div>
+            <input type="text" id="access-code-input" class="name-input" placeholder="Пароль" autocomplete="off">
             <button class="glass-btn" onclick="checkAccessCode()">Войти</button>
         </div>
 
@@ -284,7 +291,7 @@
                     <div id="battle-header-desk" class="desktop-battle-bar">
                         <div class="battle-timer-bar">
                             <div id="battle-timer-fill-desk" class="battle-timer-fill"></div>
-                            <span id="timer-percent-desk" class="timer-percent">100%</span>
+                            <span id="timer-percent-desk" class="timer-percent"><div class="hourglass">⏳</div></span>
                         </div>
                     </div>
                 </div>
@@ -514,6 +521,7 @@
             mainPanel.classList.remove('battle-active');
             showScreen('game-screen');
             battleHeaderDesk.style.display = 'none';
+            exitBtnGlobal.style.display = 'flex';
             
             boardsContainer.innerHTML = getBoardHTML('single', false, 'Игрок');
             players = { 'single': createPlayerState(mode, 'Игрок') };
@@ -525,6 +533,7 @@
             mainPanel.classList.add('battle-active');
             showScreen('game-screen');
             battleHeaderDesk.style.display = 'flex'; 
+            exitBtnGlobal.style.display = 'flex'; 
 
             let p1Name = document.getElementById('input-p1').value.trim() || 'Игрок 1';
             let p2Name = document.getElementById('input-p2').value.trim() || 'Игрок 2';
@@ -533,12 +542,10 @@
                 getBoardHTML('p1', true, p1Name) + 
                 
                 `<div id="mobile-battle-bar" class="mobile-battle-bar">
-                    <button class="mobile-exit-btn" style="transform: rotate(180deg);" onpointerdown="resetGame()">🏠</button>
-                    <div class="battle-timer-bar">
+                    <div class="battle-timer-bar" style="margin: 0; width: 100%;">
                         <div id="battle-timer-fill-mob" class="battle-timer-fill"></div>
-                        <span id="timer-percent-mob" class="timer-percent">100%</span>
+                        <span id="timer-percent-mob" class="timer-percent"><div class="hourglass">⏳</div></span>
                     </div>
-                    <button class="mobile-exit-btn" onpointerdown="resetGame()">🏠</button>
                 </div>` + 
                 
                 getBoardHTML('p2', true, p2Name);
@@ -839,14 +846,10 @@
             let timeLeft = seconds;
             
             const fillDesk = document.getElementById('battle-timer-fill-desk');
-            const pctDesk = document.getElementById('timer-percent-desk');
             const fillMob = document.getElementById('battle-timer-fill-mob');
-            const pctMob = document.getElementById('timer-percent-mob');
             
             if(fillDesk) { fillDesk.style.width = '100%'; fillDesk.className = 'battle-timer-fill'; }
-            if(pctDesk) pctDesk.innerText = '100%';
             if(fillMob) { fillMob.style.width = '100%'; fillMob.className = 'battle-timer-fill'; }
-            if(pctMob) pctMob.innerText = '100%';
             
             if (battleTimerInterval) clearInterval(battleTimerInterval);
             
@@ -861,10 +864,7 @@
                 else if (percentage <= 10) c += ' danger';
                 
                 if(fillDesk) { fillDesk.style.width = w; fillDesk.className = c; }
-                if(pctDesk) pctDesk.innerText = percentage + '%';
-                
                 if(fillMob) { fillMob.style.width = w; fillMob.className = c; }
-                if(pctMob) pctMob.innerText = percentage + '%';
                 
                 if (timeLeft <= 0) endGame();
             }, 1000);

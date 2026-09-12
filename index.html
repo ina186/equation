@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Математика 2026: Уравнения (Генератор)</title>
     <style>
+        /* Глобальные настройки. Убрали выделение текста везде, КРОМЕ полей ввода! */
         * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; user-select: none; }
+        input { user-select: auto; } /* Это жизненно важно для работы клавиатуры на телефонах */
+
         body { height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #ffc3a0, #ffafbd, #c9ffbf, #a8e0ff, #e0c3fc); background-size: 400% 400%; animation: gradientBG 15s ease infinite; overflow: hidden; position: relative; }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         
@@ -234,16 +237,22 @@
 
     <div id="main-panel" class="glass-panel">
         
-        <!-- 1. ЭКРАН ВВОДА КОДА (Блокировка для чужих) -->
+        <!-- ЭКРАН ВВОДА КОДА -->
         <div id="auth-screen" class="screen-container" style="display: none;">
             <div class="emoji-display">🔐</div>
             <h2>Доступ закрыт</h2>
-            <p style="font-size: 1.5rem; margin-bottom: 20px;">Введите код доступа, чтобы начать</p>
+            <p style="font-size: 1.5rem; margin-bottom: 5px;">Введите код доступа, чтобы начать</p>
+            
+            <!-- Место для красивой ошибки вместо всплывающего окна -->
+            <div id="auth-error-msg" style="color: #ef4444; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px; height: 20px; opacity: 0; transition: 0.3s;">Неверный код доступа!</div>
+            
+            <!-- Поле ввода. Нажимается идеально благодаря user-select: auto в CSS -->
             <input type="text" id="access-code-input" class="name-input" placeholder="Код доступа" autocomplete="off">
-            <button class="glass-btn" onpointerdown="checkAccessCode()">Войти</button>
+            <!-- onclick здесь лучше для мобильных, чем onpointerdown -->
+            <button class="glass-btn" onclick="checkAccessCode()">Войти</button>
         </div>
 
-        <!-- 2. ГЛАВНЫЙ ЭКРАН -->
+        <!-- ГЛАВНЫЙ ЭКРАН -->
         <div id="start-screen" class="screen-container" style="display: none;">
             <div class="emoji-display">✨🏫✨</div>
             <h1>Уравнения</h1>
@@ -259,19 +268,19 @@
             </div>
         </div>
 
-        <!-- 3. ЭКРАН ВВОДА ИМЕН (Перед Баттлом) -->
+        <!-- ЭКРАН ВВОДА ИМЕН (Перед Баттлом) -->
         <div id="setup-screen" class="screen-container" style="display: none;">
             <div class="emoji-display">📝</div>
             <h2>Имена игроков</h2>
             <input type="text" id="input-p1" class="name-input" placeholder="Игрок 1" autocomplete="off">
             <input type="text" id="input-p2" class="name-input" placeholder="Игрок 2" autocomplete="off">
             <div class="setup-btns">
-                <button class="glass-btn" style="background: rgba(255,175,189,0.9);" onpointerdown="initApp()">Назад</button>
-                <button class="glass-btn" style="background: rgba(201,255,191,0.9);" onpointerdown="startBattle()">В БОЙ 🚀</button>
+                <button class="glass-btn" style="background: rgba(255,175,189,0.9);" onclick="initApp()">Назад</button>
+                <button class="glass-btn" style="background: rgba(201,255,191,0.9);" onclick="startBattle()">В БОЙ 🚀</button>
             </div>
         </div>
 
-        <!-- 4. ИГРОВОЙ ЭКРАН -->
+        <!-- ИГРОВОЙ ЭКРАН -->
         <div id="game-screen">
             <button class="exit-btn-global" id="exit-btn-global" onpointerdown="resetGame()">Сдаться 🛑</button>
             
@@ -285,7 +294,7 @@
             <div id="boards-container"></div>
         </div>
 
-        <!-- 5. ЭКРАН РЕЗУЛЬТАТОВ -->
+        <!-- ЭКРАН РЕЗУЛЬТАТОВ -->
         <div id="result-screen" class="screen-container" style="display: none;">
             <h2 id="result-title">Урок окончен!</h2>
             <div id="result-emoji" class="emoji-display">🏆</div>
@@ -295,7 +304,7 @@
             </div>
             <div id="grade-text" class="grade-mark">Оценка: 5</div>
             <p id="feedback-text">Молодец! Отличная работа!</p>
-            <button class="glass-btn" onpointerdown="resetGame()" style="margin-top: 20px;">В главное меню 🔄</button>
+            <button class="glass-btn" onclick="resetGame()" style="margin-top: 20px;">В главное меню 🔄</button>
         </div>
 
     </div>
@@ -318,17 +327,13 @@
         const battleHeaderDesk = document.getElementById('battle-header-desk');
         const exitBtnGlobal = document.getElementById('exit-btn-global');
 
-        // УМНАЯ ОЧИСТКА ТЕКСТА (удаляет всё кроме букв и цифр, делает строчным)
-        function cleanString(str) {
-            return str.toLowerCase().replace(/[^a-zа-яё0-9]/g, '');
-        }
-
         window.onload = () => {
             initApp();
             
+            // Периодическая проверка (сделали регистронезависимой)
             setInterval(() => {
-                let safePassword = cleanString(GLOBAL_PASSWORD);
-                if (safePassword !== "" && sessionStorage.getItem('userEnteredCode') !== safePassword) {
+                let storedCode = sessionStorage.getItem('userEnteredCode') || "";
+                if (GLOBAL_PASSWORD !== "" && storedCode.toLowerCase() !== GLOBAL_PASSWORD.toLowerCase()) {
                     if (currentScreenId !== 'auth-screen') {
                         initApp();
                     }
@@ -346,13 +351,14 @@
         }
 
         function initApp() {
-            let safePassword = cleanString(GLOBAL_PASSWORD);
-            if (safePassword !== "") {
-                // Сравниваем очищенный пароль
-                if (sessionStorage.getItem('userEnteredCode') === safePassword) {
+            let storedCode = sessionStorage.getItem('userEnteredCode') || "";
+            if (GLOBAL_PASSWORD !== "") {
+                // Проверка без учета регистра (большие/маленькие буквы не важны)
+                if (storedCode.toLowerCase() === GLOBAL_PASSWORD.toLowerCase()) {
                     showScreen('start-screen');
                 } else {
                     document.getElementById('access-code-input').value = '';
+                    document.getElementById('auth-error-msg').style.opacity = '0';
                     showScreen('auth-screen');
                 }
             } else {
@@ -361,16 +367,18 @@
         }
 
         function checkAccessCode() {
-            let input = document.getElementById('access-code-input').value;
-            let safeInput = cleanString(input);
-            let safePassword = cleanString(GLOBAL_PASSWORD);
-
-            if (safeInput === safePassword) {
-                // Сохраняем тоже очищенный вариант
-                sessionStorage.setItem('userEnteredCode', safeInput);
+            let input = document.getElementById('access-code-input').value.trim();
+            
+            // Сравниваем введённый код и нужный код, игнорируя размер букв
+            if (input.toLowerCase() === GLOBAL_PASSWORD.toLowerCase()) {
+                sessionStorage.setItem('userEnteredCode', input);
+                document.getElementById('auth-error-msg').style.opacity = '0';
                 showScreen('start-screen');
             } else {
-                alert('Неверный код доступа!');
+                // Вместо назойливого alert() показываем красивый красный текст
+                let errMsg = document.getElementById('auth-error-msg');
+                errMsg.style.opacity = '1';
+                setTimeout(() => { errMsg.style.opacity = '0'; }, 3000); // Прячем через 3 секунды
             }
         }
 
@@ -422,8 +430,11 @@
             checkWrong.sort(() => Math.random() - 0.5);
 
             return {
-                eq, ans, emoji, step1Correct, step1Wrong: [step1Wrong[0], step1Wrong[1]],
-                checkCorrect, checkWrong: [checkWrong[0], checkWrong[1]], finalCheck
+                eq, ans, emoji, step1Correct, 
+                step1Wrong: [step1Wrong[0], step1Wrong[1]],
+                checkCorrect, 
+                checkWrong: [checkWrong[0], checkWrong[1]],
+                finalCheck
             };
         }
 

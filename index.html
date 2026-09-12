@@ -42,21 +42,51 @@
         .battle-btn { font-size: 2.2rem; width: 100%; max-width: 500px; background: linear-gradient(135deg, #ffafbd, #ffc3a0); box-shadow: 0 0 25px rgba(255, 175, 189, 0.8), inset 0 0 15px rgba(255, 255, 255, 1); animation: pulse 2s infinite;}
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
 
-        #start-screen, #result-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; }
+        /* Экраны */
+        #start-screen, #setup-screen, #result-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; width: 100%; }
         #game-screen { display: none; height: 100%; flex-direction: column; width: 100%; }
 
-        /* ТАЙМЛАЙН БАТТЛА (ВМЕСТО ЦИФР) */
-        .battle-header-ui { display: none; width: 100%; justify-content: center; align-items: center; margin-bottom: 15px; padding: 0 10%; }
-        .battle-timer-bar { width: 100%; max-width: 800px; height: 20px; background: rgba(255,255,255,0.5); border-radius: 10px; border: 2px solid #fff; box-shadow: 0 0 15px rgba(255,255,255,0.8), inset 0 0 5px rgba(0,0,0,0.1); overflow: hidden; }
-        .battle-timer-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #4ade80, #86efac); transition: width 1s linear, background 0.5s ease; box-shadow: inset 0 0 10px rgba(255,255,255,0.8); }
+        /* Поля ввода имён */
+        .name-input {
+            width: 100%; max-width: 400px; font-size: 2rem; padding: 15px 25px; margin-bottom: 15px;
+            border-radius: 20px; border: 3px solid #fff; background: rgba(255,255,255,0.7);
+            text-align: center; font-weight: 700; color: #1e293b; outline: none;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1), 0 0 15px rgba(255,255,255,0.5); transition: 0.3s;
+        }
+        .name-input:focus { background: rgba(255,255,255,0.9); border-color: #a8e0ff; }
+        .setup-btns { display: flex; gap: 20px; margin-top: 20px; }
+        
+        /* Таймлайн-бар и текст процентов */
+        .battle-timer-bar {
+            position: relative; width: 100%; max-width: 800px; height: 35px;
+            background: rgba(255,255,255,0.6); border-radius: 20px; border: 3px solid #fff; 
+            box-shadow: 0 0 15px rgba(255,255,255,0.8), inset 0 0 5px rgba(0,0,0,0.1); 
+            overflow: hidden; margin: 0 auto;
+        }
+        .battle-timer-fill { 
+            position: absolute; top: 0; left: 0; height: 100%; width: 100%; 
+            background: linear-gradient(90deg, #4ade80, #86efac); 
+            transition: width 1s linear, background 0.5s ease; 
+        }
         .battle-timer-fill.warning { background: linear-gradient(90deg, #facc15, #fef08a); }
         .battle-timer-fill.danger { background: linear-gradient(90deg, #ef4444, #fca5a5); }
+        
+        .timer-percent {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 1.6rem; color: #0f172a; text-shadow: 0 0 8px #fff, 0 0 15px #fff; z-index: 10;
+        }
 
+        /* Desktop Battle Bar */
+        .desktop-battle-bar { display: flex; width: 100%; justify-content: center; align-items: center; padding: 0 15px; margin-bottom: 10px; position: relative; }
+        .mobile-battle-bar { display: none; }
+
+        /* Игровые доски */
         #boards-container { display: flex; width: 100%; height: 100%; gap: 10px; overflow: hidden; }
         .board-wrapper { flex: 1; display: flex; flex-direction: column; background: rgba(255,255,255,0.3); border-radius: 20px; padding: 15px; border: 2px solid rgba(255,255,255,0.5); position: relative; overflow: hidden; }
         .board-divider { width: 6px; background: rgba(255,255,255,0.6); border-radius: 3px; display: none; margin: 0 5px; }
 
-        .player-header { font-size: 1.5rem; font-weight: 900; color: #1e293b; text-align: center; margin-bottom: 5px; text-shadow: 0 0 10px #fff; background: rgba(255,255,255,0.6); border-radius: 12px; padding: 8px;}
+        .player-header { font-size: 1.8rem; font-weight: 900; color: #1e293b; text-align: center; margin-bottom: 5px; text-shadow: 0 0 10px #fff; background: rgba(255,255,255,0.6); border-radius: 12px; padding: 8px;}
         .stat-text { font-size: 1.3rem; font-weight: bold; color: #334155; }
         .stat-val { color: #0f172a; font-size: 1.5rem; }
         .stat-err { color: #b91c1c; font-size: 1.5rem; }
@@ -115,25 +145,15 @@
         .result-score { font-size: 4rem; font-weight: 900; color: #0f172a; text-shadow: 0 0 30px rgba(255, 255, 255, 1), 0 0 50px #fff; margin: 15px 0; text-align: center;}
         .grade-mark { font-size: 3.5rem; font-weight: 900; padding: 15px 50px; border-radius: 30px; background: rgba(255, 255, 255, 0.8); display: inline-block; margin-bottom: 20px; border: 4px solid #fff; box-shadow: 0 0 30px #fff; text-align: center;}
         
-        .exit-btn {
-            position: absolute; top: 15px; right: 15px; background: rgba(255, 175, 189, 0.8); border: 2px solid #fff;
+        /* Кнопка "Сдаться" (Одиночный режим и ПК Баттл) */
+        .exit-btn-global {
+            position: absolute; top: 15px; right: 15px; background: rgba(255, 175, 189, 0.9); border: 2px solid #fff;
             border-radius: 15px; padding: 10px 20px; font-size: 1.2rem; font-weight: bold; color: #0f172a; cursor: pointer;
             box-shadow: 0 0 10px rgba(255,255,255,0.5); z-index: 10; display: block;
         }
-        .exit-btn:active { transform: scale(0.95); }
+        .exit-btn-global:active { transform: scale(0.95); }
 
-        .copyright {
-            position: absolute;
-            bottom: 3px; 
-            width: 100%;
-            text-align: center;
-            font-size: 0.75rem;
-            color: rgba(51, 65, 85, 0.5);
-            font-weight: 500;
-            pointer-events: none;
-            z-index: 5;
-            letter-spacing: 0.5px;
-        }
+        .copyright { position: absolute; bottom: 3px; width: 100%; text-align: center; font-size: 0.75rem; color: rgba(51, 65, 85, 0.5); font-weight: 500; pointer-events: none; z-index: 5; letter-spacing: 0.5px; }
 
         /* МЕДИА-ЗАПРОСЫ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ */
         @media (max-width: 768px) {
@@ -144,11 +164,29 @@
             .modes-grid { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; margin: 0 auto; }
             .battle-btn { font-size: 1.4rem; padding: 15px; }
             .battle-section { padding-top: 15px; margin-top: 15px;}
-            .exit-btn { padding: 8px 12px; font-size: 1rem; top: 10px; right: 10px;}
+            
+            .name-input { font-size: 1.5rem; padding: 10px 15px; max-width: 280px;}
 
-            /* Таймер на мобилке */
-            .battle-header-ui { margin-bottom: 5px; padding: 0 25px; margin-top: 5px;}
-            .battle-timer-bar { height: 12px; }
+            /* Прячем глобальную кнопку на мобилках в режиме баттла (заменяется на центральные) */
+            .glass-panel.battle-active .exit-btn-global { display: none !important; }
+
+            /* Мобильный Баттл Бар (В ЦЕНТРЕ МЕЖДУ ДОСКАМИ) */
+            .desktop-battle-bar { display: none !important; }
+            .mobile-battle-bar {
+                display: flex; flex-direction: row; align-items: center; justify-content: space-between;
+                width: 100%; padding: 5px 10px; gap: 10px;
+            }
+            .mobile-battle-bar .battle-timer-bar { height: 26px; border-width: 2px; flex: 1; }
+            .mobile-battle-bar .timer-percent { font-size: 1.2rem; line-height: 26px; }
+            
+            /* Маленькие кнопки сдаться по бокам от таймера */
+            .mobile-exit-btn {
+                background: rgba(255, 175, 189, 0.9); border: 2px solid #fff; border-radius: 50%;
+                width: 38px; height: 38px; flex-shrink: 0; font-size: 1.2rem;
+                display: flex; align-items: center; justify-content: center; cursor: pointer;
+                box-shadow: 0 0 10px rgba(255,255,255,0.5);
+            }
+            .mobile-exit-btn:active { transform: scale(0.9); background: #fff;}
 
             :not(.battle-mode) > .game-layout { flex-direction: column; overflow-y: auto; justify-content: flex-start;}
             :not(.battle-mode) > .game-layout > .left-panel { border-right: none; border-bottom: 2px dashed rgba(255,255,255,0.5); padding-bottom: 10px; flex: none; height: auto;}
@@ -171,8 +209,8 @@
             #percent-container { font-size: 1.8rem !important; }
 
             /* БАТТЛ: Игровые доски встают друг под другом */
-            #boards-container { flex-direction: column; gap: 8px; } 
-            .board-wrapper { padding: 8px; border-radius: 15px;}
+            #boards-container { flex-direction: column; gap: 5px; } 
+            .board-wrapper { padding: 6px; border-radius: 15px;}
             
             /* КЛЮЧЕВАЯ ФИШКА: ПЕРЕВОРАЧИВАЕМ ДОСКУ ИГРОКА 1 */
             #board-p1 { transform: rotate(180deg); }
@@ -182,9 +220,9 @@
             .battle-mode .left-panel { border-bottom: none; border-right: 2px dashed rgba(255,255,255,0.4); padding: 5px; width: 45%; }
             .battle-mode .right-panel { padding: 5px; width: 55%; flex: 1;}
             
-            .player-header { font-size: 1rem; padding: 4px; margin-bottom: 2px; }
-            .stat-text { font-size: 0.8rem; }
-            .stat-val, .stat-err { font-size: 1rem; }
+            .player-header { font-size: 1.2rem; padding: 4px; margin-bottom: 2px; }
+            .stat-text { font-size: 0.9rem; }
+            .stat-val, .stat-err { font-size: 1.1rem; }
             
             .battle-mode .emoji-display { font-size: 1.8rem; margin-bottom: 0; }
             .battle-mode .equation { font-size: 1.6rem; }
@@ -204,6 +242,7 @@
 
     <div id="main-panel" class="glass-panel">
         
+        <!-- ГЛАВНЫЙ ЭКРАН -->
         <div id="start-screen">
             <div class="emoji-display">✨🏫✨</div>
             <h1>Уравнения</h1>
@@ -215,23 +254,40 @@
                 <button class="glass-btn mode-btn arcade" onpointerdown="startGame('arcade')">Аркада (∞)</button>
             </div>
             <div class="battle-section">
-                <button class="glass-btn battle-btn" onpointerdown="startBattle()">⚔️ БАТТЛ (2 МИН) ⚔️</button>
+                <button class="glass-btn battle-btn" onpointerdown="showSetupScreen()">⚔️ БАТТЛ ⚔️</button>
             </div>
         </div>
 
+        <!-- ЭКРАН ВВОДА ИМЕН (Перед Баттлом) -->
+        <div id="setup-screen" style="display: none;">
+            <div class="emoji-display">📝</div>
+            <h2>Имена игроков</h2>
+            <input type="text" id="input-p1" class="name-input" placeholder="Игрок 1" autocomplete="off">
+            <input type="text" id="input-p2" class="name-input" placeholder="Игрок 2" autocomplete="off">
+            <div class="setup-btns">
+                <button class="glass-btn" style="background: rgba(255,175,189,0.9);" onpointerdown="hideSetupScreen()">Назад</button>
+                <button class="glass-btn" style="background: rgba(201,255,191,0.9);" onpointerdown="startBattle()">В БОЙ 🚀</button>
+            </div>
+        </div>
+
+        <!-- ИГРОВОЙ ЭКРАН -->
         <div id="game-screen">
-            <button class="exit-btn" id="exit-btn" onpointerdown="resetGame()">Сдаться 🛑</button>
+            <!-- Кнопка сдачи для одиночного режима и ПК баттла -->
+            <button class="exit-btn-global" id="exit-btn-global" onpointerdown="resetGame()">Сдаться 🛑</button>
             
-            <!-- ТАЙМЛАЙН ПРОГРЕСС-БАР -->
-            <div id="battle-header" class="battle-header-ui">
+            <!-- ТАЙМЛАЙН ПРОГРЕСС-БАР ДЛЯ ПК -->
+            <div id="battle-header-desk" class="desktop-battle-bar">
                 <div class="battle-timer-bar">
-                    <div id="battle-timer-fill" class="battle-timer-fill"></div>
+                    <div id="battle-timer-fill-desk" class="battle-timer-fill"></div>
+                    <span id="timer-percent-desk" class="timer-percent">100%</span>
                 </div>
             </div>
 
+            <!-- ЗДЕСЬ ГЕНЕРИРУЮТСЯ ИГРОВЫЕ ДОСКИ (И мобильный таймер между ними) -->
             <div id="boards-container"></div>
         </div>
 
+        <!-- ЭКРАН РЕЗУЛЬТАТОВ -->
         <div id="result-screen" style="display: none;">
             <h2 id="result-title">Урок окончен!</h2>
             <div id="result-emoji" class="emoji-display">🏆</div>
@@ -246,6 +302,7 @@
 
     </div>
 
+    <!-- Копирайт в самом низу страницы -->
     <div class="copyright">© 2026 Иванова Наталья Александровна</div>
 
     <script>
@@ -255,10 +312,12 @@
 
         const mainPanel = document.getElementById('main-panel');
         const startScreen = document.getElementById('start-screen');
+        const setupScreen = document.getElementById('setup-screen');
         const gameScreen = document.getElementById('game-screen');
         const resultScreen = document.getElementById('result-screen');
         const boardsContainer = document.getElementById('boards-container');
-        const battleHeader = document.getElementById('battle-header');
+        const battleHeaderDesk = document.getElementById('battle-header-desk');
+        const exitBtnGlobal = document.getElementById('exit-btn-global');
 
         function generateQuestion() {
             const type = Math.floor(Math.random() * 4);
@@ -314,9 +373,10 @@
             };
         }
 
-        function createPlayerState(mode) {
+        function createPlayerState(mode, name) {
             return {
                 mode: mode,
+                name: name,
                 currentIndex: 0,
                 mistakes: 0,
                 score: 0, 
@@ -328,11 +388,20 @@
             };
         }
 
-        function getBoardHTML(id, isBattle) {
-            const playerTitle = id === 'p1' ? 'Игрок 1 (Верх)' : 'Игрок 2 (Низ)';
+        function showSetupScreen() {
+            startScreen.style.display = 'none';
+            setupScreen.style.display = 'flex';
+        }
+
+        function hideSetupScreen() {
+            setupScreen.style.display = 'none';
+            startScreen.style.display = 'flex';
+        }
+
+        function getBoardHTML(id, isBattle, playerName) {
             const headerHTML = isBattle ? `
                 <div class="player-header">
-                    ${playerTitle}<br>
+                    ${playerName}<br>
                     <span class="stat-text">Счет: <span id="${id}-score" class="stat-val">0</span> | Ошибки: <span id="${id}-errors" class="stat-err">0</span></span>
                 </div>` : '';
 
@@ -394,13 +463,17 @@
             isBattleMode = false;
             mainPanel.classList.remove('battle-active');
             startScreen.style.display = 'none';
+            setupScreen.style.display = 'none';
             resultScreen.style.display = 'none';
             gameScreen.style.display = 'flex';
-            battleHeader.style.display = 'none';
+            battleHeaderDesk.style.display = 'none';
             
-            boardsContainer.innerHTML = getBoardHTML('single', false);
+            // В одиночной игре глобальная кнопка выхода видна всегда
+            exitBtnGlobal.style.display = 'block';
+            
+            boardsContainer.innerHTML = getBoardHTML('single', false, 'Игрок');
 
-            players = { 'single': createPlayerState(mode) };
+            players = { 'single': createPlayerState(mode, 'Игрок') };
             loadQuestion('single');
         }
 
@@ -408,25 +481,41 @@
             isBattleMode = true;
             mainPanel.classList.add('battle-active');
             startScreen.style.display = 'none';
+            setupScreen.style.display = 'none';
             resultScreen.style.display = 'none';
             gameScreen.style.display = 'flex';
-            battleHeader.style.display = 'flex';
+            battleHeaderDesk.style.display = 'flex'; // Показывается только на десктопе через CSS
+            
+            // В баттле глобальная кнопка видна на десктопе, а на мобилке скрывается через CSS
+            exitBtnGlobal.style.display = 'block';
 
+            let p1Name = document.getElementById('input-p1').value.trim() || 'Игрок 1';
+            let p2Name = document.getElementById('input-p2').value.trim() || 'Игрок 2';
+
+            // Генерируем доски и ЦЕНТРАЛЬНЫЙ МОБИЛЬНЫЙ БАР
             boardsContainer.innerHTML = 
-                getBoardHTML('p1', true) + 
-                `<div class="board-divider" style="display:block;"></div>` + 
-                getBoardHTML('p2', true);
+                getBoardHTML('p1', true, p1Name) + 
+                
+                `<div id="mobile-battle-bar" class="mobile-battle-bar">
+                    <button class="mobile-exit-btn" style="transform: rotate(180deg);" onpointerdown="resetGame()">🛑</button>
+                    <div class="battle-timer-bar">
+                        <div id="battle-timer-fill-mob" class="battle-timer-fill"></div>
+                        <span id="timer-percent-mob" class="timer-percent">100%</span>
+                    </div>
+                    <button class="mobile-exit-btn" onpointerdown="resetGame()">🛑</button>
+                </div>` + 
+                
+                getBoardHTML('p2', true, p2Name);
 
             players = {
-                'p1': createPlayerState('arcade'),
-                'p2': createPlayerState('arcade')
+                'p1': createPlayerState('arcade', p1Name),
+                'p2': createPlayerState('arcade', p2Name)
             };
 
             loadQuestion('p1');
             loadQuestion('p2');
             
-            // Запускаем таймер на 120 секунд
-            startTimer(120);
+            startTimer(120); // 2 минуты (120 секунд)
         }
 
         function loadQuestion(id) {
@@ -644,31 +733,40 @@
             }
         }
 
-        // Обновленная функция таймера с полоской прогресса
         function startTimer(seconds) {
             let totalTime = seconds;
             let timeLeft = seconds;
-            const timerFill = document.getElementById('battle-timer-fill');
             
-            // Сброс стилей таймера к стартовым
-            timerFill.style.width = '100%';
-            timerFill.className = 'battle-timer-fill'; 
+            // ПК-таймер
+            const fillDesk = document.getElementById('battle-timer-fill-desk');
+            const pctDesk = document.getElementById('timer-percent-desk');
+            // Мобильный таймер (будет существовать только после генерации досок)
+            const fillMob = document.getElementById('battle-timer-fill-mob');
+            const pctMob = document.getElementById('timer-percent-mob');
+            
+            // Сброс
+            if(fillDesk) { fillDesk.style.width = '100%'; fillDesk.className = 'battle-timer-fill'; }
+            if(pctDesk) pctDesk.innerText = '100%';
+            if(fillMob) { fillMob.style.width = '100%'; fillMob.className = 'battle-timer-fill'; }
+            if(pctMob) pctMob.innerText = '100%';
             
             if (battleTimerInterval) clearInterval(battleTimerInterval);
             
             battleTimerInterval = setInterval(() => {
                 timeLeft--;
                 
-                // Высчитываем процент для полоски
-                let percentage = (timeLeft / totalTime) * 100;
-                timerFill.style.width = percentage + '%';
+                let percentage = Math.ceil((timeLeft / totalTime) * 100);
+                let w = percentage + '%';
+                let c = 'battle-timer-fill';
                 
-                // Изменяем цвета на последних секундах
-                if (timeLeft <= 30 && timeLeft > 10) {
-                    timerFill.className = 'battle-timer-fill warning'; // Желтеет
-                } else if (timeLeft <= 10) {
-                    timerFill.className = 'battle-timer-fill danger'; // Краснеет
-                }
+                if (timeLeft <= 30 && timeLeft > 10) c += ' warning';
+                else if (timeLeft <= 10) c += ' danger';
+                
+                if(fillDesk) { fillDesk.style.width = w; fillDesk.className = c; }
+                if(pctDesk) pctDesk.innerText = percentage + '%';
+                
+                if(fillMob) { fillMob.style.width = w; fillMob.className = c; }
+                if(pctMob) pctMob.innerText = percentage + '%';
                 
                 if (timeLeft <= 0) {
                     endGame();
@@ -755,16 +853,16 @@
             let emoji = "🏆";
             
             if (p1Pts > p2Pts) {
-                winnerText = "Победил Игрок 1 (Верх)!";
+                winnerText = "Победил(а) " + p1.name + "!";
                 emoji = "🎉";
             } else if (p2Pts > p1Pts) {
-                winnerText = "Победил Игрок 2 (Низ)!";
+                winnerText = "Победил(а) " + p2.name + "!";
                 emoji = "🎉";
             } else {
                 if (p1.mistakes < p2.mistakes) {
-                    winnerText = "Победил Игрок 1 (точнее)!";
+                    winnerText = "Победил(а) " + p1.name + " (точнее)!";
                 } else if (p2.mistakes < p1.mistakes) {
-                    winnerText = "Победил Игрок 2 (точнее)!";
+                    winnerText = "Победил(а) " + p2.name + " (точнее)!";
                 } else {
                     winnerText = "Идеальная ничья!";
                     emoji = "🤝";
@@ -776,8 +874,8 @@
             
             document.getElementById('score-block').innerHTML = 
                 `<div style="font-size:1.5rem; line-height: 1.6; text-align: left; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 15px; width: 100%; max-width: 320px; margin: 0 auto;">
-                    <b>Игрок 1:</b> <span style="color:#15803d">${p1.score}</span> решено | <span style="color:#b91c1c">${p1.mistakes}</span> ошибок 👉 <b>${p1Pts} очков</b><br>
-                    <b>Игрок 2:</b> <span style="color:#15803d">${p2.score}</span> решено | <span style="color:#b91c1c">${p2.mistakes}</span> ошибок 👉 <b>${p2Pts} очков</b>
+                    <b>${p1.name}:</b> <span style="color:#15803d">${p1.score}</span> решено | <span style="color:#b91c1c">${p1.mistakes}</span> ошибок 👉 <b>${p1Pts} очков</b><br>
+                    <b>${p2.name}:</b> <span style="color:#15803d">${p2.score}</span> решено | <span style="color:#b91c1c">${p2.mistakes}</span> ошибок 👉 <b>${p2Pts} очков</b>
                  </div>`;
             
             let gradeElem = document.getElementById('grade-text');
@@ -792,6 +890,7 @@
         function resetGame() {
             if (battleTimerInterval) clearInterval(battleTimerInterval);
             mainPanel.classList.remove('battle-active');
+            setupScreen.style.display = 'none';
             startScreen.style.display = 'flex';
             resultScreen.style.display = 'none';
             gameScreen.style.display = 'none';

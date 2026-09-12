@@ -45,8 +45,12 @@
         #start-screen, #result-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; }
         #game-screen { display: none; height: 100%; flex-direction: column; width: 100%; }
 
-        .battle-header-ui { display: none; width: 100%; justify-content: center; align-items: center; margin-bottom: 10px; }
-        .timer { font-size: 3rem; font-weight: 900; background: rgba(255,255,255,0.9); padding: 5px 30px; border-radius: 25px; color: #b91c1c; border: 4px solid #fff; box-shadow: 0 0 20px rgba(255,255,255,0.9), inset 0 0 10px rgba(255,0,0,0.1); letter-spacing: 2px;}
+        /* ТАЙМЛАЙН БАТТЛА (ВМЕСТО ЦИФР) */
+        .battle-header-ui { display: none; width: 100%; justify-content: center; align-items: center; margin-bottom: 15px; padding: 0 10%; }
+        .battle-timer-bar { width: 100%; max-width: 800px; height: 20px; background: rgba(255,255,255,0.5); border-radius: 10px; border: 2px solid #fff; box-shadow: 0 0 15px rgba(255,255,255,0.8), inset 0 0 5px rgba(0,0,0,0.1); overflow: hidden; }
+        .battle-timer-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #4ade80, #86efac); transition: width 1s linear, background 0.5s ease; box-shadow: inset 0 0 10px rgba(255,255,255,0.8); }
+        .battle-timer-fill.warning { background: linear-gradient(90deg, #facc15, #fef08a); }
+        .battle-timer-fill.danger { background: linear-gradient(90deg, #ef4444, #fca5a5); }
 
         #boards-container { display: flex; width: 100%; height: 100%; gap: 10px; overflow: hidden; }
         .board-wrapper { flex: 1; display: flex; flex-direction: column; background: rgba(255,255,255,0.3); border-radius: 20px; padding: 15px; border: 2px solid rgba(255,255,255,0.5); position: relative; overflow: hidden; }
@@ -118,14 +122,13 @@
         }
         .exit-btn:active { transform: scale(0.95); }
 
-        /* Изящный копирайт */
         .copyright {
             position: absolute;
             bottom: 3px; 
             width: 100%;
             text-align: center;
-            font-size: 0.75rem; /* Мелкий шрифт */
-            color: rgba(51, 65, 85, 0.5); /* Полупрозрачный */
+            font-size: 0.75rem;
+            color: rgba(51, 65, 85, 0.5);
             font-weight: 500;
             pointer-events: none;
             z-index: 5;
@@ -141,10 +144,12 @@
             .modes-grid { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; margin: 0 auto; }
             .battle-btn { font-size: 1.4rem; padding: 15px; }
             .battle-section { padding-top: 15px; margin-top: 15px;}
-            .timer { font-size: 2rem; padding: 5px 15px; }
             .exit-btn { padding: 8px 12px; font-size: 1rem; top: 10px; right: 10px;}
 
-            /* Одиночный режим: панели встают друг под друга */
+            /* Таймер на мобилке */
+            .battle-header-ui { margin-bottom: 5px; padding: 0 25px; margin-top: 5px;}
+            .battle-timer-bar { height: 12px; }
+
             :not(.battle-mode) > .game-layout { flex-direction: column; overflow-y: auto; justify-content: flex-start;}
             :not(.battle-mode) > .game-layout > .left-panel { border-right: none; border-bottom: 2px dashed rgba(255,255,255,0.5); padding-bottom: 10px; flex: none; height: auto;}
             :not(.battle-mode) > .game-layout > .right-panel { padding-top: 15px; flex: 1; justify-content: flex-start;}
@@ -169,6 +174,9 @@
             #boards-container { flex-direction: column; gap: 8px; } 
             .board-wrapper { padding: 8px; border-radius: 15px;}
             
+            /* КЛЮЧЕВАЯ ФИШКА: ПЕРЕВОРАЧИВАЕМ ДОСКУ ИГРОКА 1 */
+            #board-p1 { transform: rotate(180deg); }
+            
             /* Внутри баттла на мобилке левая и правая панель снова бок о бок для экономии высоты */
             .battle-mode .game-layout { flex-direction: row; align-items: center; } 
             .battle-mode .left-panel { border-bottom: none; border-right: 2px dashed rgba(255,255,255,0.4); padding: 5px; width: 45%; }
@@ -188,7 +196,6 @@
             .battle-mode .num-btn { height: 35px; font-size: 1.2rem; border-radius: 8px; border-width: 1px;}
             .battle-mode .num-btn.action.enter { height: 35px; font-size: 0.9rem; }
             
-            /* Скрываем текст инструкции в баттле на мобилках для экономии места */
             .battle-mode .instructions { display: none; }
         }
     </style>
@@ -215,8 +222,11 @@
         <div id="game-screen">
             <button class="exit-btn" id="exit-btn" onpointerdown="resetGame()">Сдаться 🛑</button>
             
+            <!-- ТАЙМЛАЙН ПРОГРЕСС-БАР -->
             <div id="battle-header" class="battle-header-ui">
-                <div class="timer" id="battle-timer">02:00</div>
+                <div class="battle-timer-bar">
+                    <div id="battle-timer-fill" class="battle-timer-fill"></div>
+                </div>
             </div>
 
             <div id="boards-container"></div>
@@ -236,7 +246,6 @@
 
     </div>
 
-    <!-- Твой скорректированный копирайт -->
     <div class="copyright">© 2026 Иванова Наталья Александровна</div>
 
     <script>
@@ -320,7 +329,7 @@
         }
 
         function getBoardHTML(id, isBattle) {
-            const playerTitle = id === 'p1' ? 'Игрок 1 (Слева / Верх)' : 'Игрок 2 (Справа / Низ)';
+            const playerTitle = id === 'p1' ? 'Игрок 1 (Верх)' : 'Игрок 2 (Низ)';
             const headerHTML = isBattle ? `
                 <div class="player-header">
                     ${playerTitle}<br>
@@ -415,6 +424,8 @@
 
             loadQuestion('p1');
             loadQuestion('p2');
+            
+            // Запускаем таймер на 120 секунд
             startTimer(120);
         }
 
@@ -633,26 +644,36 @@
             }
         }
 
+        // Обновленная функция таймера с полоской прогресса
         function startTimer(seconds) {
+            let totalTime = seconds;
             let timeLeft = seconds;
-            const timerDisplay = document.getElementById('battle-timer');
-            timerDisplay.innerText = formatTime(timeLeft);
+            const timerFill = document.getElementById('battle-timer-fill');
+            
+            // Сброс стилей таймера к стартовым
+            timerFill.style.width = '100%';
+            timerFill.className = 'battle-timer-fill'; 
             
             if (battleTimerInterval) clearInterval(battleTimerInterval);
             
             battleTimerInterval = setInterval(() => {
                 timeLeft--;
-                timerDisplay.innerText = formatTime(timeLeft);
+                
+                // Высчитываем процент для полоски
+                let percentage = (timeLeft / totalTime) * 100;
+                timerFill.style.width = percentage + '%';
+                
+                // Изменяем цвета на последних секундах
+                if (timeLeft <= 30 && timeLeft > 10) {
+                    timerFill.className = 'battle-timer-fill warning'; // Желтеет
+                } else if (timeLeft <= 10) {
+                    timerFill.className = 'battle-timer-fill danger'; // Краснеет
+                }
+                
                 if (timeLeft <= 0) {
                     endGame();
                 }
             }, 1000);
-        }
-
-        function formatTime(sec) {
-            let m = Math.floor(sec / 60);
-            let s = sec % 60;
-            return (m < 10 ? "0"+m : m) + ":" + (s < 10 ? "0"+s : s);
         }
 
         function endGame() {

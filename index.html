@@ -304,8 +304,10 @@
 
     <script>
         // =========================================================================
-        // P.S. Да, я знаю, что пароль можно найти через F12, но абсолютное большинство об этом не догадывается :)
-        const GLOBAL_PASSWORD = "медуза"; 
+        // ГЛОБАЛЬНЫЙ ПАРОЛЬ (ДЛЯ ВСЕГО ИНТЕРНЕТА)
+        // Впишите сюда слово, чтобы запаролить сайт (например, "кораллы").
+        // Если оставить "", сайт будет открыт свободно.
+        const GLOBAL_PASSWORD = ""; 
         // =========================================================================
 
         let isBattleMode = false;
@@ -318,11 +320,17 @@
         const battleHeaderDesk = document.getElementById('battle-header-desk');
         const exitBtnGlobal = document.getElementById('exit-btn-global');
 
+        // УМНАЯ ОЧИСТКА ТЕКСТА (удаляет всё кроме букв и цифр, делает строчным)
+        function cleanString(str) {
+            return str.toLowerCase().replace(/[^a-zа-яё0-9]/g, '');
+        }
+
         window.onload = () => {
             initApp();
             
             setInterval(() => {
-                if (GLOBAL_PASSWORD !== "" && sessionStorage.getItem('userEnteredCode') !== GLOBAL_PASSWORD) {
+                let safePassword = cleanString(GLOBAL_PASSWORD);
+                if (safePassword !== "" && sessionStorage.getItem('userEnteredCode') !== safePassword) {
                     if (currentScreenId !== 'auth-screen') {
                         initApp();
                     }
@@ -340,8 +348,10 @@
         }
 
         function initApp() {
-            if (GLOBAL_PASSWORD !== "") {
-                if (sessionStorage.getItem('userEnteredCode') === GLOBAL_PASSWORD) {
+            let safePassword = cleanString(GLOBAL_PASSWORD);
+            if (safePassword !== "") {
+                // Сравниваем очищенный пароль
+                if (sessionStorage.getItem('userEnteredCode') === safePassword) {
                     showScreen('start-screen');
                 } else {
                     document.getElementById('access-code-input').value = '';
@@ -353,9 +363,13 @@
         }
 
         function checkAccessCode() {
-            let input = document.getElementById('access-code-input').value.trim();
-            if (input === GLOBAL_PASSWORD) {
-                sessionStorage.setItem('userEnteredCode', input);
+            let input = document.getElementById('access-code-input').value;
+            let safeInput = cleanString(input);
+            let safePassword = cleanString(GLOBAL_PASSWORD);
+
+            if (safeInput === safePassword) {
+                // Сохраняем тоже очищенный вариант
+                sessionStorage.setItem('userEnteredCode', safeInput);
                 showScreen('start-screen');
             } else {
                 alert('Неверный код доступа!');

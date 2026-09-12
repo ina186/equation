@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Математика 2026: Уравнения (Генератор)</title>
     <style>
-        /* Глобальные настройки. Убрали выделение текста везде, КРОМЕ полей ввода! */
-        * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; user-select: none; }
-        input { user-select: auto; } /* Это жизненно важно для работы клавиатуры на телефонах */
+        * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; user-select: none; scrollbar-width: none; }
+        ::-webkit-scrollbar { width: 0; height: 0; background: transparent; }
+        input { user-select: auto; }
 
         body { height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #ffc3a0, #ffafbd, #c9ffbf, #a8e0ff, #e0c3fc); background-size: 400% 400%; animation: gradientBG 15s ease infinite; overflow: hidden; position: relative; }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
@@ -19,144 +19,149 @@
             border: 2px solid rgba(255, 255, 255, 0.9); border-radius: 30px;
             box-shadow: 0 0 30px rgba(255, 255, 255, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.6);
             width: 96vw; max-width: 1200px; height: 95vh;
-            padding: 30px; display: flex; flex-direction: column; transition: all 0.5s ease; position: relative;
+            padding: min(20px, 3vh) min(30px, 4vw); display: flex; flex-direction: column; transition: all 0.5s ease; position: relative;
         }
-        .glass-panel.battle-active { 
-            max-width: 1600px; 
-            padding: 15px; 
-        }
+        .glass-panel.battle-active { max-width: 1600px; padding: min(15px, 2vh); }
 
-        h1 { font-size: 3.5rem; color: #1e293b; text-shadow: 0 0 15px rgba(255, 255, 255, 1), 0 0 30px rgba(255, 255, 255, 1); margin-bottom: 20px; text-align: center; }
-        h2 { font-size: 3rem; color: #1e293b; text-shadow: 0 0 15px rgba(255, 255, 255, 1); margin-bottom: 15px; text-align: center; }
-        p { font-size: 1.8rem; margin-bottom: 30px; color: #334155; font-weight: 700; text-shadow: 0 0 10px rgba(255, 255, 255, 0.9); text-align: center; }
+        h1 { font-size: min(3.5rem, 6vh); color: #1e293b; text-shadow: 0 0 15px rgba(255, 255, 255, 1), 0 0 30px rgba(255, 255, 255, 1); margin-bottom: min(20px, 3vh); text-align: center; }
+        h2 { font-size: min(3rem, 5vh); color: #1e293b; text-shadow: 0 0 15px rgba(255, 255, 255, 1); margin-bottom: min(15px, 2vh); text-align: center; }
+        p { font-size: min(1.8rem, 3vh); margin-bottom: min(30px, 4vh); color: #334155; font-weight: 700; text-shadow: 0 0 10px rgba(255, 255, 255, 0.9); text-align: center; }
 
         .glass-btn {
-            background: rgba(255, 255, 255, 0.8); border: 3px solid #fff; padding: 15px 30px; font-size: 2rem; font-weight: 800;
+            background: rgba(255, 255, 255, 0.8); border: 3px solid #fff; padding: min(15px, 2vh) min(30px, 4vw); font-size: min(2rem, 3.5vh); font-weight: 800;
             color: #1e293b; border-radius: 25px; cursor: pointer; box-shadow: 0 0 20px rgba(255, 255, 255, 0.8), inset 0 0 15px rgba(255, 255, 255, 1);
             transition: transform 0.2s, background 0.2s; margin: 0 auto; display: block;
         }
         .glass-btn:active { transform: scale(0.95); background: #fff; }
 
-        .modes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 10px; }
-        .mode-btn { font-size: 1.8rem; width: 100%; }
+        .modes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: min(20px, 3vh); margin-top: 10px; }
+        .mode-btn { font-size: min(1.8rem, 3vh); width: 100%; }
         .mode-btn.arcade { background: linear-gradient(135deg, rgba(201, 255, 191, 0.8), rgba(168, 224, 255, 0.8)); }
         
-        .battle-section { margin-top: 25px; padding-top: 25px; border-top: 3px dashed rgba(255,255,255,0.6); width: 100%; text-align: center;}
-        .battle-btn { font-size: 2.2rem; width: 100%; max-width: 500px; background: linear-gradient(135deg, #ffafbd, #ffc3a0); box-shadow: 0 0 25px rgba(255, 175, 189, 0.8), inset 0 0 15px rgba(255, 255, 255, 1); animation: pulse 2s infinite;}
+        .battle-section { margin-top: min(25px, 3vh); padding-top: min(25px, 3vh); border-top: 3px dashed rgba(255,255,255,0.6); width: 100%; text-align: center;}
+        .battle-btn { font-size: min(2.2rem, 3.5vh); width: 100%; max-width: 500px; background: linear-gradient(135deg, #ffafbd, #ffc3a0); box-shadow: 0 0 25px rgba(255, 175, 189, 0.8), inset 0 0 15px rgba(255, 255, 255, 1); animation: pulse 2s infinite;}
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
 
-        /* Экраны */
-        .screen-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; width: 100%; }
-        #game-screen { display: none; height: 100%; flex-direction: column; width: 100%; }
+        .screen-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; width: 100%; overflow: hidden; }
+        #game-screen { display: none; height: 100%; flex-direction: column; width: 100%; overflow: hidden; }
 
-        /* Поля ввода (Имена и Пароли) */
         .name-input {
-            width: 100%; max-width: 400px; font-size: 2rem; padding: 15px 25px; margin-bottom: 15px;
+            width: 100%; max-width: 400px; font-size: min(2rem, 3.5vh); padding: min(15px, 2vh) 25px; margin-bottom: 15px;
             border-radius: 20px; border: 3px solid #fff; background: rgba(255,255,255,0.7);
             text-align: center; font-weight: 700; color: #1e293b; outline: none;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.1), 0 0 15px rgba(255,255,255,0.5); transition: 0.3s;
         }
         .name-input:focus { background: rgba(255,255,255,0.9); border-color: #a8e0ff; }
-        .setup-btns { display: flex; gap: 20px; margin-top: 20px; flex-wrap: wrap; justify-content: center;}
+        .setup-btns { display: flex; gap: 20px; margin-top: min(20px, 3vh); flex-wrap: wrap; justify-content: center;}
         
-        /* Таймлайн-бар и текст процентов */
+        .game-header { display: flex; justify-content: space-between; align-items: center; width: 100%; min-height: min(50px, 7vh); margin-bottom: min(10px, 1.5vh); position: relative; z-index: 10;}
+        .header-left, .header-right { width: 200px; display: flex; align-items: center; }
+        .header-right { justify-content: flex-end; }
+        .header-center { flex: 1; display: flex; justify-content: center; align-items: center; }
+
+        .desktop-battle-bar { display: none; width: 100%; max-width: 600px; }
+        .mobile-battle-bar { display: none; }
+        
         .battle-timer-bar {
-            position: relative; width: 100%; max-width: 800px; height: 35px;
+            position: relative; width: 100%; height: min(35px, 5vh);
             background: rgba(255,255,255,0.6); border-radius: 20px; border: 3px solid #fff; 
-            box-shadow: 0 0 15px rgba(255,255,255,0.8), inset 0 0 5px rgba(0,0,0,0.1); 
-            overflow: hidden; margin: 0 auto;
+            box-shadow: 0 0 15px rgba(255,255,255,0.8), inset 0 0 5px rgba(0,0,0,0.1); overflow: hidden;
         }
         .battle-timer-fill { 
             position: absolute; top: 0; left: 0; height: 100%; width: 100%; 
-            background: linear-gradient(90deg, #4ade80, #86efac); 
-            transition: width 1s linear, background 0.5s ease; 
+            background: linear-gradient(90deg, #4ade80, #86efac); transition: width 1s linear, background 0.5s ease; 
         }
         .battle-timer-fill.warning { background: linear-gradient(90deg, #facc15, #fef08a); }
         .battle-timer-fill.danger { background: linear-gradient(90deg, #ef4444, #fca5a5); }
         
         .timer-percent {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 900; font-size: 1.6rem; color: #0f172a; text-shadow: 0 0 8px #fff, 0 0 15px #fff; z-index: 10;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: min(1.6rem, 2.5vh); color: #0f172a; text-shadow: 0 0 8px #fff, 0 0 15px #fff; z-index: 10;
         }
 
-        .desktop-battle-bar { display: flex; width: 100%; justify-content: center; align-items: center; padding: 0 15px; margin-bottom: 10px; position: relative; }
-        .mobile-battle-bar { display: none; }
+        .exit-btn-global {
+            background: rgba(255, 255, 255, 0.9); border: 3px solid #fff; border-radius: 15px; 
+            padding: min(8px, 1.2vh) min(15px, 2vw); font-size: min(1.2rem, 2vh); font-weight: 800; color: #1e293b; 
+            cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+            display: flex; align-items: center; justify-content: center; transition: 0.2s; white-space: nowrap;
+        }
+        .exit-btn-global:active { transform: scale(0.95); }
 
-        /* Игровые доски */
         #boards-container { display: flex; width: 100%; height: 100%; gap: 10px; overflow: hidden; }
-        .board-wrapper { flex: 1; display: flex; flex-direction: column; background: rgba(255,255,255,0.3); border-radius: 20px; padding: 15px; border: 2px solid rgba(255,255,255,0.5); position: relative; overflow: hidden; }
-        .board-divider { width: 6px; background: rgba(255,255,255,0.6); border-radius: 3px; display: none; margin: 0 5px; }
+        .board-wrapper { flex: 1; display: flex; flex-direction: column; background: rgba(255,255,255,0.3); border-radius: 20px; padding: min(15px, 2vh); border: 2px solid rgba(255,255,255,0.5); position: relative; overflow: hidden; }
 
-        .player-header { font-size: 1.8rem; font-weight: 900; color: #1e293b; text-align: center; margin-bottom: 5px; text-shadow: 0 0 10px #fff; background: rgba(255,255,255,0.6); border-radius: 12px; padding: 8px;}
-        .stat-text { font-size: 1.3rem; font-weight: bold; color: #334155; }
-        .stat-val { color: #0f172a; font-size: 1.5rem; }
-        .stat-err { color: #b91c1c; font-size: 1.5rem; }
+        .player-header { font-size: min(1.8rem, 3vh); font-weight: 900; color: #1e293b; text-align: center; margin-bottom: min(5px, 1vh); text-shadow: 0 0 10px #fff; background: rgba(255,255,255,0.6); border-radius: 12px; padding: 8px;}
+        .stat-text { font-size: min(1.3rem, 2vh); font-weight: bold; color: #334155; }
+        .stat-val { color: #0f172a; font-size: min(1.5rem, 2.5vh); }
+        .stat-err { color: #b91c1c; font-size: min(1.5rem, 2.5vh); }
 
-        .progress-bar { background: rgba(255, 255, 255, 0.5); border-radius: 15px; height: 20px; width: 100%; margin-bottom: 10px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.8); flex-shrink: 0;}
+        .progress-bar { background: rgba(255, 255, 255, 0.5); border-radius: 15px; height: min(20px, 3vh); width: 100%; margin-bottom: min(10px, 1.5vh); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.8); flex-shrink: 0;}
         .progress-fill { height: 100%; background: linear-gradient(90deg, #ffafbd, #a8e0ff, #c9ffbf); width: 0%; transition: width 0.4s ease; box-shadow: 0 0 10px rgba(255, 255, 255, 0.9); }
 
-        .instructions { font-size: 1.8rem; font-weight: bold; color: #334155; text-align: center; margin-bottom: 5px; text-shadow: 0 0 10px #fff; min-height: 40px; display: flex; align-items: center; justify-content: center;}
+        .instructions { font-size: min(1.8rem, 3vh); font-weight: bold; color: #334155; text-align: center; margin-bottom: min(5px, 1vh); text-shadow: 0 0 10px #fff; min-height: min(40px, 6vh); display: flex; align-items: center; justify-content: center;}
 
         .game-layout { display: flex; flex-direction: row; flex: 1; align-items: stretch; justify-content: space-between; overflow: hidden;}
         .left-panel { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; border-right: 2px dashed rgba(255,255,255,0.5);}
         .right-panel { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; position: relative;}
 
-        .emoji-display { font-size: 5rem; margin-bottom: 5px; filter: drop-shadow(0 0 20px rgba(255,255,255,0.9)); animation: bounce 2s infinite ease-in-out; }
+        .emoji-display { font-size: min(5rem, 8vh); margin-bottom: min(5px, 1vh); filter: drop-shadow(0 0 20px rgba(255,255,255,0.9)); animation: bounce 2s infinite ease-in-out; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-        .equation { font-size: 3.5rem; font-weight: 900; color: #0f172a; text-shadow: 0 0 20px rgba(255, 255, 255, 1), 0 0 30px rgba(255, 255, 255, 0.8); letter-spacing: 2px; margin-bottom: 15px; white-space: nowrap; }
-
-        .step-container { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 8px;}
-        .step-row { display: flex; align-items: center; gap: 10px; font-size: 2.5rem; font-weight: 900; color: #0f172a; text-shadow: 0 0 15px #fff; min-height: 50px;}
+        .math-container { display: flex; flex-direction: column; width: 100%; max-width: 450px; margin: 0 auto; align-items: center; justify-content: center;}
         
-        .input-area {
-            font-size: 3rem; font-weight: 900; color: #0f172a; background: rgba(255, 255, 255, 0.7); border: 4px solid #fff;
-            border-radius: 15px; padding: 5px 15px; display: flex; align-items: center; justify-content: center;
-            min-width: 100px; height: 60px; box-shadow: 0 0 20px rgba(255, 255, 255, 0.8), inset 0 0 10px rgba(255, 255, 255, 0.8);
+        .equation, .check-equation { font-size: min(3.5rem, 6vh); font-weight: 900; color: #0f172a; text-shadow: 0 0 20px rgba(255, 255, 255, 1), 0 0 30px rgba(255, 255, 255, 0.8); letter-spacing: 2px; margin-bottom: min(10px, 1.5vh); white-space: nowrap; text-align: center; }
+        .step-row, .final-check-row { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: min(2.8rem, 5vh); font-weight: 900; color: #0f172a; text-shadow: 0 0 15px #fff; min-height: min(50px, 7vh); margin-bottom: min(5px, 1vh);}
+        
+        .math-divider { width: 100%; max-width: 280px; height: 4px; background: #0f172a; border-radius: 2px; margin: min(15px, 2vh) auto; transition: opacity 0.5s; box-shadow: 0 0 10px #fff;}
+        .check-title { font-size: min(1.8rem, 3vh); color: #334155; text-transform: uppercase; font-weight: 900; margin-bottom: min(5px, 1vh); text-shadow: 0 0 10px #fff; text-align: center; width: 100%;}
+        
+        .check-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: min(5px, 1vh) min(15px, 2vw); align-items: center; width: 100%; font-size: min(2.8rem, 5vh); font-weight: 900; color: #0f172a; text-shadow: 0 0 15px #fff; justify-content: center;}
+        .c-left { display: flex; justify-content: flex-end; align-items: center; white-space: nowrap; font-weight: 900;}
+        .c-eq { display: flex; justify-content: center; align-items: center; font-weight: 900; }
+        .c-right { display: flex; justify-content: flex-start; align-items: center; white-space: nowrap; font-weight: 900; }
+
+        .input-area, .final-input-area {
+            font-size: min(3rem, 5vh); font-weight: 900; color: #0f172a; background: rgba(255, 255, 255, 0.7); border: min(4px, 0.6vh) solid #fff;
+            border-radius: 15px; padding: min(5px, 1vh) min(15px, 2vw); display: flex; align-items: center; justify-content: center;
+            min-width: min(100px, 12vh); height: min(60px, 8vh); box-shadow: 0 0 20px rgba(255, 255, 255, 0.8), inset 0 0 10px rgba(255, 255, 255, 0.8); transition: 0.3s;
         }
 
-        .numpad-container { position: absolute; width: 100%; max-width: 380px; transition: opacity 0.3s; display: none; flex-direction: column; align-items: center;}
-        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; background: rgba(255, 255, 255, 0.3); padding: 15px; border-radius: 20px; border: 2px solid rgba(255, 255, 255, 0.6); box-shadow: inset 0 0 20px rgba(255,255,255,0.5); }
-        .num-btn { background: rgba(255, 255, 255, 0.8); border: 2px solid #fff; border-radius: 12px; font-size: 2.2rem; font-weight: 900; color: #1e293b; height: 60px; cursor: pointer; box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05); transition: 0.1s; display: flex; justify-content: center; align-items: center; }
+        .numpad-container { position: relative; width: 100%; max-width: 380px; display: none; flex-direction: column; align-items: center;}
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: min(10px, 1.5vh); width: 100%; background: rgba(255, 255, 255, 0.3); padding: min(15px, 2.5vh); border-radius: 20px; border: 2px solid rgba(255, 255, 255, 0.6); box-shadow: inset 0 0 20px rgba(255,255,255,0.5); }
+        .num-btn { background: rgba(255, 255, 255, 0.8); border: 2px solid #fff; border-radius: 12px; font-size: min(2.2rem, 4vh); font-weight: 900; color: #1e293b; height: min(60px, 8vh); cursor: pointer; box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05); transition: 0.1s; display: flex; justify-content: center; align-items: center; }
         .num-btn:active { transform: scale(0.92); background: #fff; box-shadow: 0 0 20px rgba(255, 255, 255, 1); }
         .num-btn.action { background: rgba(255, 175, 189, 0.8); color: #0f172a; }
-        .num-btn.action.enter { background: rgba(201, 255, 191, 0.9); grid-column: span 3; height: 65px; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px; }
+        .num-btn.action.enter { background: rgba(201, 255, 191, 0.9); grid-column: span 3; height: min(65px, 9vh); font-size: min(1.5rem, 2.5vh); text-transform: uppercase; letter-spacing: 2px; }
 
-        .options-container { position: absolute; width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: 10px; transition: opacity 0.3s; opacity: 0; pointer-events: none; align-items: center;}
-        .options-container.active { opacity: 1; pointer-events: auto; }
+        .options-container { position: relative; width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: min(10px, 1.5vh); pointer-events: none; align-items: center;}
+        .options-container.active { pointer-events: auto; }
         .option-btn {
-            background: rgba(255, 255, 255, 0.85); border: 4px solid #fff; border-radius: 15px; padding: 12px; font-size: 2rem;
+            background: rgba(255, 255, 255, 0.85); border: 4px solid #fff; border-radius: 15px; padding: min(12px, 2vh); font-size: min(2rem, 3.5vh);
             font-weight: 800; color: #1e293b; cursor: pointer; width: 100%; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: 0.2s;
         }
         .option-btn:active { transform: scale(0.95); }
 
-        .battle-mode .game-layout { flex-direction: column; justify-content: space-evenly; overflow: hidden; }
-        .battle-mode .left-panel { border-right: none; border-bottom: 2px dashed rgba(255,255,255,0.5); padding: 5px; flex: 1; width: 100%; justify-content: space-evenly;}
-        .battle-mode .right-panel { width: 100%; padding: 5px; justify-content: space-evenly; flex: 1;}
+        .battle-mode .game-layout { flex-direction: column; justify-content: flex-start; }
+        .battle-mode .left-panel { border-right: none; border-bottom: 2px dashed rgba(255,255,255,0.5); padding: 5px; flex: none; width: 100%; justify-content: flex-start;}
+        .battle-mode .right-panel { width: 100%; padding: 5px; justify-content: center; flex: 1;}
         
-        .battle-mode .emoji-display { font-size: 3rem; margin-bottom: 0;}
-        .battle-mode .equation { font-size: 2.5rem; margin-bottom: 5px; }
-        .battle-mode .step-row { font-size: 1.8rem; min-height: 38px; gap: 5px;}
-        .battle-mode .input-area { font-size: 1.8rem; height: 42px; min-width: 70px; border-width: 2px;}
-        .battle-mode .numpad { gap: 6px; padding: 10px; }
-        .battle-mode .num-btn { height: 45px; font-size: 1.8rem; border-radius: 10px;}
-        .battle-mode .num-btn.action.enter { height: 50px; font-size: 1.2rem; }
-        .battle-mode .option-btn { font-size: 1.5rem; padding: 8px; border-radius: 10px;}
-
-        .result-score { font-size: 4rem; font-weight: 900; color: #0f172a; text-shadow: 0 0 30px rgba(255, 255, 255, 1), 0 0 50px #fff; margin: 15px 0; text-align: center;}
-        .grade-mark { font-size: 3.5rem; font-weight: 900; padding: 15px 50px; border-radius: 30px; background: rgba(255, 255, 255, 0.8); display: inline-block; margin-bottom: 20px; border: 4px solid #fff; box-shadow: 0 0 30px #fff; text-align: center;}
+        .battle-mode .emoji-display { font-size: min(3rem, 5vh); margin-bottom: 0;}
+        .battle-mode .equation, .battle-mode .check-equation { font-size: min(2.2rem, 4vh); margin-bottom: min(5px, 1vh); }
+        .battle-mode .step-row, .battle-mode .final-check-row { font-size: min(1.8rem, 3.5vh); min-height: min(38px, 5vh); gap: 5px;}
+        .battle-mode .math-divider { max-width: 200px; height: 3px; margin: min(5px, 1vh) auto;}
+        .battle-mode .check-title { font-size: min(1.3rem, 2.5vh); margin-bottom: 2px;}
         
-        .exit-btn-global {
-            position: absolute; top: 15px; right: 15px; background: rgba(255, 175, 189, 0.9); border: 2px solid #fff;
-            border-radius: 15px; padding: 10px 20px; font-size: 1.2rem; font-weight: bold; color: #0f172a; cursor: pointer;
-            box-shadow: 0 0 10px rgba(255,255,255,0.5); z-index: 10; display: block;
-        }
-        .exit-btn-global:active { transform: scale(0.95); }
+        .battle-mode .input-area, .battle-mode .final-input-area { font-size: min(1.8rem, 3vh); height: min(42px, 6vh); min-width: min(70px, 8vh); border-width: 2px;}
+        .battle-mode .numpad { gap: min(6px, 1vh); padding: min(10px, 1.5vh); }
+        .battle-mode .num-btn { height: min(45px, 6vh); font-size: min(1.8rem, 3vh); border-radius: 10px;}
+        .battle-mode .num-btn.action.enter { height: min(50px, 6.5vh); font-size: min(1.2rem, 2vh); }
+        .battle-mode .option-btn { font-size: min(1.5rem, 2.8vh); padding: min(8px, 1vh); border-radius: 10px;}
 
+        .result-score { font-size: min(4rem, 7vh); font-weight: 900; color: #0f172a; text-shadow: 0 0 30px rgba(255, 255, 255, 1), 0 0 50px #fff; margin: min(15px, 2vh) 0; text-align: center;}
+        .grade-mark { font-size: min(3.5rem, 6vh); font-weight: 900; padding: min(15px, 2vh) min(50px, 6vw); border-radius: 30px; background: rgba(255, 255, 255, 0.8); display: inline-block; margin-bottom: min(20px, 3vh); border: 4px solid #fff; box-shadow: 0 0 30px #fff; text-align: center;}
+        
         .copyright { position: absolute; bottom: 3px; width: 100%; text-align: center; font-size: 0.75rem; color: rgba(51, 65, 85, 0.5); font-weight: 500; pointer-events: none; z-index: 5; letter-spacing: 0.5px; }
 
-        /* МЕДИА-ЗАПРОСЫ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ */
         @media (max-width: 768px) {
             .glass-panel { padding: 15px; border-radius: 20px; max-height: 98vh; width: 98vw; }
             h1 { font-size: 2.2rem; margin-bottom: 10px;}
@@ -165,70 +170,69 @@
             .modes-grid { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; margin: 0 auto; }
             .battle-btn { font-size: 1.4rem; padding: 15px; }
             .battle-section { padding-top: 15px; margin-top: 15px;}
-            
             .name-input { font-size: 1.5rem; padding: 10px 15px; max-width: 280px;}
 
-            .glass-panel.battle-active .exit-btn-global { display: none !important; }
+            .glass-panel.battle-active .game-header { display: none !important; }
+            .header-left, .header-right { width: 120px; }
+            .exit-btn-global { padding: 6px 12px; font-size: 1rem; }
 
-            .desktop-battle-bar { display: none !important; }
-            .mobile-battle-bar {
-                display: flex; flex-direction: row; align-items: center; justify-content: space-between;
-                width: 100%; padding: 5px 10px; gap: 10px;
+            .mobile-battle-bar { 
+                display: flex; flex-direction: row; align-items: center; justify-content: center; 
+                width: 100%; padding: 5px 10px; gap: 15px; background: rgba(255,255,255,0.25); border-radius: 20px; margin: 5px 0;
             }
-            .mobile-battle-bar .battle-timer-bar { height: 26px; border-width: 2px; flex: 1; }
-            .mobile-battle-bar .timer-percent { font-size: 1.2rem; line-height: 26px; }
+            .mobile-battle-bar .battle-timer-bar { flex: 1; height: 24px; margin: 0; border-width: 2px;}
+            .mobile-battle-bar .timer-percent { font-size: 1.2rem; line-height: 24px; }
             
-            .mobile-exit-btn {
-                background: rgba(255, 175, 189, 0.9); border: 2px solid #fff; border-radius: 50%;
-                width: 38px; height: 38px; flex-shrink: 0; font-size: 1.2rem;
-                display: flex; align-items: center; justify-content: center; cursor: pointer;
-                box-shadow: 0 0 10px rgba(255,255,255,0.5);
+            .mobile-exit-btn { 
+                background: rgba(255, 255, 255, 0.9); border: 2px solid #fff; border-radius: 50%; 
+                width: 40px; height: 40px; flex-shrink: 0; font-size: 1.4rem; 
+                display: flex; align-items: center; justify-content: center; cursor: pointer; 
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15); padding: 0; line-height: 1; color: #1e293b;
             }
-            .mobile-exit-btn:active { transform: scale(0.9); background: #fff;}
+            .mobile-exit-btn:active { transform: scale(0.9); }
 
-            :not(.battle-mode) > .game-layout { flex-direction: column; overflow-y: auto; justify-content: flex-start;}
+            :not(.battle-mode) > .game-layout { flex-direction: column; justify-content: flex-start;}
             :not(.battle-mode) > .game-layout > .left-panel { border-right: none; border-bottom: 2px dashed rgba(255,255,255,0.5); padding-bottom: 10px; flex: none; height: auto;}
             :not(.battle-mode) > .game-layout > .right-panel { padding-top: 15px; flex: 1; justify-content: flex-start;}
             
             .emoji-display { font-size: 3rem; margin-bottom: 5px; }
-            .equation { font-size: 2.5rem; margin-bottom: 10px; }
-            .step-row { font-size: 1.6rem; min-height: 40px; }
-            .input-area { font-size: 2rem; height: 45px; min-width: 70px; }
+            .equation, .check-equation { font-size: 2.5rem; margin-bottom: 10px; }
+            .step-row, .final-check-row { font-size: 2.2rem; min-height: 40px; }
+            .math-divider { max-width: 200px; height: 3px; margin: 10px auto;}
+            .check-title { font-size: 1.3rem; }
             
+            .input-area, .final-input-area { font-size: 2rem; height: 45px; min-width: 70px; border-width: 3px; padding: 2px 10px;}
             .numpad { gap: 8px; padding: 15px; }
             .num-btn { height: 50px; font-size: 1.8rem; border-radius: 12px;}
             .num-btn.action.enter { height: 55px; font-size: 1.2rem; }
-            
             .option-btn { font-size: 1.3rem; padding: 10px; }
             .instructions { font-size: 1.3rem; min-height: 30px; margin-bottom: 5px; }
-
             .result-score { font-size: 2.5rem; margin: 10px 0; }
             .grade-mark { font-size: 2.5rem; padding: 10px 30px; }
             #percent-container { font-size: 1.8rem !important; }
 
             #boards-container { flex-direction: column; gap: 5px; } 
             .board-wrapper { padding: 6px; border-radius: 15px;}
-            
             #board-p1 { transform: rotate(180deg); }
             
             .battle-mode .game-layout { flex-direction: row; align-items: center; } 
             .battle-mode .left-panel { border-bottom: none; border-right: 2px dashed rgba(255,255,255,0.4); padding: 5px; width: 45%; }
             .battle-mode .right-panel { padding: 5px; width: 55%; flex: 1;}
-            
             .player-header { font-size: 1.2rem; padding: 4px; margin-bottom: 2px; }
             .stat-text { font-size: 0.9rem; }
             .stat-val, .stat-err { font-size: 1.1rem; }
             
             .battle-mode .emoji-display { font-size: 1.8rem; margin-bottom: 0; }
-            .battle-mode .equation { font-size: 1.6rem; }
-            .battle-mode .step-row { font-size: 1rem; min-height: 25px; gap: 3px;}
-            .battle-mode .input-area { font-size: 1.1rem; height: 28px; min-width: 40px; border-width: 2px;}
-            .battle-mode .option-btn { font-size: 0.9rem; padding: 8px; }
+            .battle-mode .equation, .battle-mode .check-equation { font-size: 1.6rem; }
+            .battle-mode .step-row, .battle-mode .final-check-row { font-size: 1.2rem; min-height: 25px; gap: 3px;}
+            .battle-mode .math-divider { max-width: 150px; margin: 2px auto; }
+            .battle-mode .check-title { display: none; }
             
+            .battle-mode .input-area, .battle-mode .final-input-area { font-size: 1.3rem; height: 32px; min-width: 50px; border-width: 2px; padding: 2px 5px; border-radius: 8px;}
+            .battle-mode .option-btn { font-size: 0.9rem; padding: 8px; }
             .battle-mode .numpad { gap: 4px; padding: 5px; }
             .battle-mode .num-btn { height: 35px; font-size: 1.2rem; border-radius: 8px; border-width: 1px;}
             .battle-mode .num-btn.action.enter { height: 35px; font-size: 0.9rem; }
-            
             .battle-mode .instructions { display: none; }
         }
     </style>
@@ -237,30 +241,23 @@
 
     <div id="main-panel" class="glass-panel">
         
-        <!-- ЭКРАН ВВОДА КОДА -->
         <div id="auth-screen" class="screen-container" style="display: none;">
             <div class="emoji-display">🔐</div>
             <h2>Доступ закрыт</h2>
             <p style="font-size: 1.5rem; margin-bottom: 5px;">Введите код доступа, чтобы начать</p>
-            
-            <!-- Место для красивой ошибки вместо всплывающего окна -->
             <div id="auth-error-msg" style="color: #ef4444; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px; height: 20px; opacity: 0; transition: 0.3s;">Неверный код доступа!</div>
-            
-            <!-- Поле ввода. Нажимается идеально благодаря user-select: auto в CSS -->
             <input type="text" id="access-code-input" class="name-input" placeholder="Код доступа" autocomplete="off">
-            <!-- onclick здесь лучше для мобильных, чем onpointerdown -->
             <button class="glass-btn" onclick="checkAccessCode()">Войти</button>
         </div>
 
-        <!-- ГЛАВНЫЙ ЭКРАН -->
         <div id="start-screen" class="screen-container" style="display: none;">
             <div class="emoji-display">✨🏫✨</div>
             <h1>Уравнения</h1>
-            <p>Выбери, сколько примеров хочешь решить:</p>
+            <p>Выбери, сколько уравнений хочешь решить:</p>
             <div class="modes-grid">
-                <button class="glass-btn mode-btn" onpointerdown="startGame(3)">3 примера</button>
-                <button class="glass-btn mode-btn" onpointerdown="startGame(5)">5 примеров</button>
-                <button class="glass-btn mode-btn" onpointerdown="startGame(10)">10 примеров</button>
+                <button class="glass-btn mode-btn" onpointerdown="startGame(3)">3 уравнения</button>
+                <button class="glass-btn mode-btn" onpointerdown="startGame(5)">5 уравнений</button>
+                <button class="glass-btn mode-btn" onpointerdown="startGame(10)">10 уравнений</button>
                 <button class="glass-btn mode-btn arcade" onpointerdown="startGame('arcade')">Аркада (∞)</button>
             </div>
             <div class="battle-section">
@@ -268,7 +265,6 @@
             </div>
         </div>
 
-        <!-- ЭКРАН ВВОДА ИМЕН (Перед Баттлом) -->
         <div id="setup-screen" class="screen-container" style="display: none;">
             <div class="emoji-display">📝</div>
             <h2>Имена игроков</h2>
@@ -280,21 +276,26 @@
             </div>
         </div>
 
-        <!-- ИГРОВОЙ ЭКРАН -->
-        <div id="game-screen">
-            <button class="exit-btn-global" id="exit-btn-global" onpointerdown="resetGame()">Сдаться 🛑</button>
+        <div id="game-screen" class="screen-container" style="display: none;">
             
-            <div id="battle-header-desk" class="desktop-battle-bar">
-                <div class="battle-timer-bar">
-                    <div id="battle-timer-fill-desk" class="battle-timer-fill"></div>
-                    <span id="timer-percent-desk" class="timer-percent">100%</span>
+            <div class="game-header">
+                <div class="header-left"></div>
+                <div class="header-center">
+                    <div id="battle-header-desk" class="desktop-battle-bar">
+                        <div class="battle-timer-bar">
+                            <div id="battle-timer-fill-desk" class="battle-timer-fill"></div>
+                            <span id="timer-percent-desk" class="timer-percent">100%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="exit-btn-global" id="exit-btn-global" onpointerdown="resetGame()">На главную 🏠</button>
                 </div>
             </div>
 
             <div id="boards-container"></div>
         </div>
 
-        <!-- ЭКРАН РЕЗУЛЬТАТОВ -->
         <div id="result-screen" class="screen-container" style="display: none;">
             <h2 id="result-title">Урок окончен!</h2>
             <div id="result-emoji" class="emoji-display">🏆</div>
@@ -329,8 +330,6 @@
 
         window.onload = () => {
             initApp();
-            
-            // Периодическая проверка (сделали регистронезависимой)
             setInterval(() => {
                 let storedCode = sessionStorage.getItem('userEnteredCode') || "";
                 if (GLOBAL_PASSWORD !== "" && storedCode.toLowerCase() !== GLOBAL_PASSWORD.toLowerCase()) {
@@ -353,7 +352,6 @@
         function initApp() {
             let storedCode = sessionStorage.getItem('userEnteredCode') || "";
             if (GLOBAL_PASSWORD !== "") {
-                // Проверка без учета регистра (большие/маленькие буквы не важны)
                 if (storedCode.toLowerCase() === GLOBAL_PASSWORD.toLowerCase()) {
                     showScreen('start-screen');
                 } else {
@@ -368,17 +366,14 @@
 
         function checkAccessCode() {
             let input = document.getElementById('access-code-input').value.trim();
-            
-            // Сравниваем введённый код и нужный код, игнорируя размер букв
             if (input.toLowerCase() === GLOBAL_PASSWORD.toLowerCase()) {
                 sessionStorage.setItem('userEnteredCode', input);
                 document.getElementById('auth-error-msg').style.opacity = '0';
                 showScreen('start-screen');
             } else {
-                // Вместо назойливого alert() показываем красивый красный текст
                 let errMsg = document.getElementById('auth-error-msg');
                 errMsg.style.opacity = '1';
-                setTimeout(() => { errMsg.style.opacity = '0'; }, 3000); // Прячем через 3 секунды
+                setTimeout(() => { errMsg.style.opacity = '0'; }, 3000);
             }
         }
 
@@ -387,7 +382,10 @@
         function generateQuestion() {
             const type = Math.floor(Math.random() * 4);
             const emojis = ["🍓", "🍄", "🚀", "🦊", "🍪", "🌟", "🍎", "🎨", "🍒", "🧸", "🦄", "🦕", "⚽", "🍔"];
+            const letters = ["x", "y", "z", "a", "b", "c", "m", "n", "p", "k"];
+            
             const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+            const v = letters[Math.floor(Math.random() * letters.length)];
             
             let a, b, c, x, eq, ans, step1Correct, step1Wrong, checkCorrect, checkWrong, finalCheck;
 
@@ -395,10 +393,10 @@
                 a = Math.floor(Math.random() * 40) + 5; 
                 x = Math.floor(Math.random() * 40) + 5; 
                 c = a + x;
-                eq = type === 0 ? `x + ${a} = ${c}` : `${a} + x = ${c}`;
+                eq = type === 0 ? `${v} + ${a} = ${c}` : `${a} + ${v} = ${c}`;
                 ans = x.toString();
                 step1Correct = `${c} - ${a}`;
-                step1Wrong = [`${c} + ${a}`, `${a} - ${c}`, `x - ${a}`];
+                step1Wrong = [`${c} + ${a}`, `${a} - ${c}`, `${v} - ${a}`];
                 checkCorrect = type === 0 ? `${x} + ${a} = ${c}` : `${a} + ${x} = ${c}`;
                 checkWrong = [`${c} - ${a} = ${x}`, type === 0 ? `${x} - ${a} = ${c}` : `${a} - ${x} = ${c}`];
                 finalCheck = `${c} = ${c}`;
@@ -406,10 +404,10 @@
                 b = Math.floor(Math.random() * 40) + 5;
                 c = Math.floor(Math.random() * 40) + 5;
                 x = b + c;
-                eq = `x - ${b} = ${c}`;
+                eq = `${v} - ${b} = ${c}`;
                 ans = x.toString();
                 step1Correct = `${c} + ${b}`; 
-                step1Wrong = [`${c} - ${b}`, `${b} - ${c}`, `x - ${b}`];
+                step1Wrong = [`${c} - ${b}`, `${b} - ${c}`, `${v} - ${b}`];
                 checkCorrect = `${x} - ${b} = ${c}`;
                 checkWrong = [`${x} + ${b} = ${c}`, `${c} + ${b} = ${x}`];
                 finalCheck = `${c} = ${c}`;
@@ -417,10 +415,10 @@
                 c = Math.floor(Math.random() * 40) + 5;
                 x = Math.floor(Math.random() * 40) + 5;
                 a = c + x;
-                eq = `${a} - x = ${c}`;
+                eq = `${a} - ${v} = ${c}`;
                 ans = x.toString();
                 step1Correct = `${a} - ${c}`;
-                step1Wrong = [`${a} + ${c}`, `${c} - ${a}`, `${x} + ${c}`];
+                step1Wrong = [`${a} + ${c}`, `${c} - ${a}`, `${v} + ${c}`];
                 checkCorrect = `${a} - ${x} = ${c}`;
                 checkWrong = [`${x} - ${a} = ${c}`, `${a} - ${c} = ${x}`];
                 finalCheck = `${c} = ${c}`;
@@ -430,11 +428,8 @@
             checkWrong.sort(() => Math.random() - 0.5);
 
             return {
-                eq, ans, emoji, step1Correct, 
-                step1Wrong: [step1Wrong[0], step1Wrong[1]],
-                checkCorrect, 
-                checkWrong: [checkWrong[0], checkWrong[1]],
-                finalCheck
+                eq, ans, emoji, step1Correct, step1Wrong: [step1Wrong[0], step1Wrong[1]],
+                checkCorrect, checkWrong: [checkWrong[0], checkWrong[1]], finalCheck, letter: v
             };
         }
 
@@ -462,26 +457,34 @@
                 <div class="game-layout">
                     <div class="left-panel">
                         <div id="${id}-emoji" class="emoji-display">🍓</div>
-                        <div id="${id}-equation" class="equation"></div>
                         
-                        <div class="step-container">
+                        <div class="math-container">
+                            <div id="${id}-equation" class="equation"></div>
+                            
                             <div class="step-row" id="${id}-step1-row" style="opacity: 0;">
-                                <span>x = </span>
-                                <div id="${id}-step1-display" style="border-bottom: 2px solid #0f172a; min-width: 60px; text-align: center; padding-bottom: 2px;">?</div>
+                                <span id="${id}-step1-var">x = </span>
+                                <div id="${id}-step1-display" style="min-width: 60px; text-align: center;">?</div>
                             </div>
+                            
                             <div class="step-row" id="${id}-step2-row" style="opacity: 0;">
-                                <span>x = </span>
+                                <span id="${id}-step2-var">x = </span>
                                 <div id="${id}-input-display" class="input-area"></div>
                             </div>
                             
-                            <div class="step-row" id="${id}-step3-row" style="opacity: 0; flex-direction: column; align-items: center; margin-top: 5px;">
-                                <span style="font-size: ${isBattle ? '1rem' : '1.8rem'}; color: #334155; text-transform: uppercase;">Проверка:</span>
-                                <div style="display: flex; flex-direction: column; align-items: center; gap: 0px;">
-                                    <div id="${id}-check-display" style="font-size: ${isBattle ? '1.4rem' : '2.8rem'};"></div>
-                                    <div id="${id}-final-check-display" style="font-size: ${isBattle ? '1.4rem' : '2.8rem'}; color: #15803d; opacity: 0; transition: opacity 0.5s;"></div>
+                            <div id="${id}-divider" class="math-divider" style="opacity: 0;"></div>
+                            
+                            <div id="${id}-step3-container" style="opacity: 0; width: 100%; text-align: center;">
+                                <div class="check-title">ПРОВЕРКА:</div>
+                                <div id="${id}-check-display" class="check-equation">?</div>
+                                
+                                <div id="${id}-final-check-row" class="final-check-row" style="opacity: 0; display: none;">
+                                    <div id="${id}-final-input" class="input-area final-input-area"></div>
+                                    <span id="${id}-final-eq">=</span>
+                                    <span id="${id}-final-right"></span>
                                 </div>
                             </div>
                         </div>
+
                     </div>
 
                     <div class="right-panel">
@@ -511,7 +514,6 @@
             mainPanel.classList.remove('battle-active');
             showScreen('game-screen');
             battleHeaderDesk.style.display = 'none';
-            exitBtnGlobal.style.display = 'block';
             
             boardsContainer.innerHTML = getBoardHTML('single', false, 'Игрок');
             players = { 'single': createPlayerState(mode, 'Игрок') };
@@ -523,7 +525,6 @@
             mainPanel.classList.add('battle-active');
             showScreen('game-screen');
             battleHeaderDesk.style.display = 'flex'; 
-            exitBtnGlobal.style.display = 'block';
 
             let p1Name = document.getElementById('input-p1').value.trim() || 'Игрок 1';
             let p2Name = document.getElementById('input-p2').value.trim() || 'Игрок 2';
@@ -532,12 +533,12 @@
                 getBoardHTML('p1', true, p1Name) + 
                 
                 `<div id="mobile-battle-bar" class="mobile-battle-bar">
-                    <button class="mobile-exit-btn" style="transform: rotate(180deg);" onpointerdown="resetGame()">🛑</button>
+                    <button class="mobile-exit-btn" style="transform: rotate(180deg);" onpointerdown="resetGame()">🏠</button>
                     <div class="battle-timer-bar">
                         <div id="battle-timer-fill-mob" class="battle-timer-fill"></div>
                         <span id="timer-percent-mob" class="timer-percent">100%</span>
                     </div>
-                    <button class="mobile-exit-btn" onpointerdown="resetGame()">🛑</button>
+                    <button class="mobile-exit-btn" onpointerdown="resetGame()">🏠</button>
                 </div>` + 
                 
                 getBoardHTML('p2', true, p2Name);
@@ -558,6 +559,8 @@
             
             document.getElementById(`${id}-equation`).innerText = p.currentQuestion.eq;
             document.getElementById(`${id}-emoji`).innerText = p.currentQuestion.emoji;
+            document.getElementById(`${id}-step1-var`).innerText = p.currentQuestion.letter + " = ";
+            document.getElementById(`${id}-step2-var`).innerText = p.currentQuestion.letter + " = ";
             
             if (!isBattleMode) {
                 let progressFill = document.getElementById(`${id}-progress`);
@@ -571,21 +574,36 @@
             document.getElementById(`${id}-step1-row`).style.opacity = '1';
             document.getElementById(`${id}-step1-display`).innerText = "?";
             document.getElementById(`${id}-step2-row`).style.opacity = '0';
-            document.getElementById(`${id}-step3-row`).style.opacity = '0';
             
-            let checkDisplay = document.getElementById(`${id}-check-display`);
-            checkDisplay.innerText = "";
-            checkDisplay.style.color = "#0f172a";
+            document.getElementById(`${id}-divider`).style.opacity = '0';
+            document.getElementById(`${id}-step3-container`).style.opacity = '0';
             
-            let finalCheck = document.getElementById(`${id}-final-check-display`);
-            finalCheck.innerText = "";
-            finalCheck.style.opacity = '0';
+            document.getElementById(`${id}-check-display`).style.display = "block";
+            document.getElementById(`${id}-check-display`).innerText = "?";
+            document.getElementById(`${id}-final-check-row`).style.opacity = '0';
+            document.getElementById(`${id}-final-check-row`).style.display = 'none';
+            
+            let finalInput = document.getElementById(`${id}-final-input`);
+            let finalEq = document.getElementById(`${id}-final-eq`);
+            let finalRight = document.getElementById(`${id}-final-right`);
+
+            finalEq.style.color = "";
+            finalRight.style.color = "";
+            finalInput.style.color = "";
+            finalInput.style.borderColor = "#fff";
+            finalInput.style.background = "rgba(255, 255, 255, 0.7)";
+            finalInput.innerText = "";
             
             let inputDisplay = document.getElementById(`${id}-input-display`);
             inputDisplay.innerText = "";
             inputDisplay.style.borderColor = "#fff";
             inputDisplay.style.background = "rgba(255, 255, 255, 0.7)";
             p.currentInput = "";
+
+            document.getElementById(`${id}-numpad-block`).style.display = 'none';
+            let optBlock = document.getElementById(`${id}-options-block`);
+            optBlock.style.display = 'none';
+            optBlock.classList.remove('active');
 
             startStage1(id);
         }
@@ -595,7 +613,7 @@
             p.currentStage = 1;
             
             let instruction = document.getElementById(`${id}-instruction-text`);
-            if(instruction) instruction.innerText = "Выбери, как найти x:";
+            if(instruction) instruction.innerText = "Выбери, как найти " + p.currentQuestion.letter + ":";
             
             p.currentOptions = [p.currentQuestion.step1Correct, p.currentQuestion.step1Wrong[0], p.currentQuestion.step1Wrong[1]];
             shuffleOptions(id);
@@ -607,7 +625,7 @@
             p.currentStage = 2;
             
             let instruction = document.getElementById(`${id}-instruction-text`);
-            if(instruction) instruction.innerText = "Посчитай x:";
+            if(instruction) instruction.innerText = "Посчитай " + p.currentQuestion.letter + ":";
             
             document.getElementById(`${id}-step2-row`).style.opacity = '1';
             
@@ -626,8 +644,8 @@
             let instruction = document.getElementById(`${id}-instruction-text`);
             if(instruction) instruction.innerText = "Выбери проверку:";
             
-            document.getElementById(`${id}-step3-row`).style.opacity = '1';
-            document.getElementById(`${id}-check-display`).innerText = "?";
+            document.getElementById(`${id}-divider`).style.opacity = '1';
+            document.getElementById(`${id}-step3-container`).style.opacity = '1';
             
             p.currentOptions = [p.currentQuestion.checkCorrect, p.currentQuestion.checkWrong[0], p.currentQuestion.checkWrong[1]];
             shuffleOptions(id);
@@ -636,6 +654,33 @@
             let optionsBlock = document.getElementById(`${id}-options-block`);
             optionsBlock.style.display = 'flex';
             setTimeout(() => { showOptions(id); }, 50);
+        }
+
+        function startStage4(id) {
+            let p = players[id];
+            p.currentStage = 4;
+            
+            let instruction = document.getElementById(`${id}-instruction-text`);
+            if(instruction) instruction.innerText = "Посчитай левую часть:";
+            
+            let parts = p.currentQuestion.checkCorrect.split(" = ");
+            document.getElementById(`${id}-final-right`).innerText = parts[1];
+            
+            document.getElementById(`${id}-final-check-row`).style.display = 'flex';
+            
+            setTimeout(() => {
+                document.getElementById(`${id}-final-check-row`).style.opacity = '1';
+            }, 50);
+            
+            p.currentInput = "";
+            document.getElementById(`${id}-final-input`).innerText = "";
+            
+            let optionsBlock = document.getElementById(`${id}-options-block`);
+            optionsBlock.classList.remove('active');
+            setTimeout(() => {
+                optionsBlock.style.display = 'none';
+                document.getElementById(`${id}-numpad-block`).style.display = 'flex';
+            }, 300);
         }
 
         function shuffleOptions(id) {
@@ -687,14 +732,7 @@
                     }, 800);
                 } else if (p.currentStage === 3) {
                     document.getElementById(`${id}-check-display`).innerText = p.currentOptions[index];
-                    
-                    setTimeout(() => {
-                        let fCheck = document.getElementById(`${id}-final-check-display`);
-                        fCheck.innerText = p.currentQuestion.finalCheck;
-                        fCheck.style.opacity = '1';
-                    }, 600);
-
-                    setTimeout(() => nextQuestion(id), 1500);
+                    setTimeout(() => { startStage4(id); }, 600);
                 }
             } else {
                 optBtns[index].style.background = "#ffafbd";
@@ -707,60 +745,89 @@
             let p = players[id];
             if (p.currentInput.length < 3) {
                 p.currentInput += num;
-                document.getElementById(`${id}-input-display`).innerText = p.currentInput;
+                if (p.currentStage === 2) {
+                    document.getElementById(`${id}-input-display`).innerText = p.currentInput;
+                } else if (p.currentStage === 4) {
+                    document.getElementById(`${id}-final-input`).innerText = p.currentInput;
+                }
             }
         }
 
         function deleteNum(id) {
             let p = players[id];
             p.currentInput = p.currentInput.slice(0, -1);
-            document.getElementById(`${id}-input-display`).innerText = p.currentInput;
+            if (p.currentStage === 2) {
+                document.getElementById(`${id}-input-display`).innerText = p.currentInput;
+            } else if (p.currentStage === 4) {
+                document.getElementById(`${id}-final-input`).innerText = p.currentInput;
+            }
         }
 
         function submitNum(id) {
             let p = players[id];
             if (p.currentInput === "") return;
             
-            let inputDisplay = document.getElementById(`${id}-input-display`);
-            if (p.currentInput === p.currentQuestion.ans) {
-                inputDisplay.style.borderColor = "#4ade80";
-                inputDisplay.style.background = "#c9ffbf";
-                setTimeout(() => {
-                    inputDisplay.style.borderColor = "#fff";
-                    inputDisplay.style.background = "rgba(255, 255, 255, 0.7)";
-                    startStage3(id);
-                }, 800);
-            } else {
-                inputDisplay.style.borderColor = "#f87171";
-                inputDisplay.style.background = "#ffafbd";
-                registerMistake(id);
-                setTimeout(() => {
-                    inputDisplay.style.borderColor = "#fff";
-                    inputDisplay.style.background = "rgba(255, 255, 255, 0.7)";
-                    p.currentInput = "";
-                    inputDisplay.innerText = "";
-                }, 800);
+            if (p.currentStage === 2) {
+                let inputDisplay = document.getElementById(`${id}-input-display`);
+                if (p.currentInput === p.currentQuestion.ans) {
+                    inputDisplay.style.borderColor = "#4ade80";
+                    inputDisplay.style.background = "#c9ffbf";
+                    setTimeout(() => {
+                        inputDisplay.style.borderColor = "#fff";
+                        inputDisplay.style.background = "rgba(255, 255, 255, 0.7)";
+                        startStage3(id);
+                    }, 800);
+                } else {
+                    inputDisplay.style.borderColor = "#f87171";
+                    inputDisplay.style.background = "#ffafbd";
+                    registerMistake(id);
+                    setTimeout(() => {
+                        inputDisplay.style.borderColor = "#fff";
+                        inputDisplay.style.background = "rgba(255, 255, 255, 0.7)";
+                        p.currentInput = "";
+                        inputDisplay.innerText = "";
+                    }, 800);
+                }
+            } else if (p.currentStage === 4) {
+                let inputDisplay = document.getElementById(`${id}-final-input`);
+                let parts = p.currentQuestion.checkCorrect.split(" = ");
+                let correctSum = parts[1]; 
+                
+                if (p.currentInput === correctSum) {
+                    inputDisplay.style.borderColor = "#4ade80";
+                    inputDisplay.style.background = "#c9ffbf";
+                    inputDisplay.style.color = "#15803d";
+                    document.getElementById(`${id}-final-eq`).style.color = "#15803d";
+                    document.getElementById(`${id}-final-right`).style.color = "#15803d";
+                    
+                    setTimeout(() => {
+                        nextQuestion(id);
+                    }, 1500);
+                } else {
+                    inputDisplay.style.borderColor = "#f87171";
+                    inputDisplay.style.background = "#ffafbd";
+                    registerMistake(id);
+                    setTimeout(() => {
+                        inputDisplay.style.borderColor = "#fff";
+                        inputDisplay.style.background = "rgba(255, 255, 255, 0.7)";
+                        p.currentInput = "";
+                        inputDisplay.innerText = "";
+                    }, 800);
+                }
             }
         }
 
         function nextQuestion(id) {
             let p = players[id];
-            document.getElementById(`${id}-options-block`).classList.remove('active');
             p.currentIndex++;
             
             if (isBattleMode) {
                 p.score++;
                 document.getElementById(`${id}-score`).innerText = p.score;
-                setTimeout(() => {
-                    document.getElementById(`${id}-options-block`).style.display = 'none';
-                    loadQuestion(id);
-                }, 300);
+                loadQuestion(id);
             } else {
                 if (p.mode === 'arcade' || p.currentIndex < p.mode) {
-                    setTimeout(() => {
-                        document.getElementById(`${id}-options-block`).style.display = 'none';
-                        loadQuestion(id);
-                    }, 300);
+                    loadQuestion(id);
                 } else {
                     endGame();
                 }
@@ -825,7 +892,7 @@
             document.getElementById('result-title').innerText = "Урок окончен!";
 
             if (totalQuestions === 0) {
-                scoreBlock.innerText = "Ты не решил ни одного примера";
+                scoreBlock.innerText = "Ты не решил ни одного уравнения";
                 percentContainer.style.display = 'none';
                 gradeElem.style.display = 'none';
                 feedbackElem.innerText = "Возвращайся, когда будешь готов!";

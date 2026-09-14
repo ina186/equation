@@ -21,6 +21,8 @@
         </div>
 
         <div id="start-screen" class="screen-container" style="display: none;">
+            <div class="secret-gear" onclick="showAdminAuth()">⚙️</div>
+            
             <div class="emoji-display">✨🏫✨</div>
             <h1>Уравнения</h1>
             <p>Выбери, сколько уравнений хочешь решить:</p>
@@ -34,6 +36,32 @@
                 <button class="glass-btn battle-btn" onpointerdown="startPrepMode()" style="background: linear-gradient(135deg, #fef08a, #fed7aa);">🧠 Подготовка</button>
                 <button class="glass-btn battle-btn" onpointerdown="showSetupScreen()">⚔️ БАТТЛ ⚔️</button>
             </div>
+        </div>
+
+        <!-- НОВЫЙ ЭКРАН: Ввод пароля администратора -->
+        <div id="admin-auth-screen" class="screen-container" style="display: none;">
+            <div class="emoji-display">🕵️‍♀️</div>
+            <h2>Панель администратора</h2>
+            <div id="admin-error-msg" style="color: #ef4444; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px; height: 20px; opacity: 0; transition: 0.3s;">Неверный пароль!</div>
+            <input type="text" id="admin-code-input" class="name-input" placeholder="Пароль" autocomplete="off">
+            <div class="setup-btns">
+                <button class="glass-btn" style="background: rgba(255,175,189,0.9);" onclick="initApp()">Назад</button>
+                <button class="glass-btn" onclick="checkAdminCode()">Войти</button>
+            </div>
+        </div>
+
+        <!-- НОВЫЙ ЭКРАН: Шпаргалка по файлам -->
+        <div id="admin-dashboard-screen" class="screen-container" style="display: none;">
+            <div class="emoji-display" style="font-size: 3rem;">📁</div>
+            <h2>Архитектура проекта</h2>
+            <div style="background: rgba(255,255,255,0.7); padding: clamp(10px, 2vw, 20px); border-radius: 15px; width: 95%; max-width: 600px; margin-bottom: 2vh; font-size: clamp(1rem, 2.5vw, 1.2rem); font-weight: 700; color: #1e293b; border: 3px solid #fff;">
+                <p style="margin-bottom: 8px; text-align: left;"><b>📄 index.html</b> — Скелет (экраны, кнопки).</p>
+                <p style="margin-bottom: 8px; text-align: left;"><b>🎨 style.css</b> — Адаптация, цвета, шрифты.</p>
+                <p style="margin-bottom: 8px; text-align: left;"><b>⚙️ common.js</b> — Базовая логика (генератор уравнений, переключение экранов, пароли).</p>
+                <p style="margin-bottom: 8px; text-align: left;"><b>⚔️ game.js</b> — Логика «Аркады» и «Баттла» (таймер, очки).</p>
+                <p style="margin-bottom: 0; text-align: left;"><b>🧠 prep.js</b> — Логика «Подготовки» (анимации, драг-н-дроп).</p>
+            </div>
+            <button class="glass-btn" onclick="initApp()">Закрыть</button>
         </div>
 
         <div id="setup-screen" class="screen-container" style="display: none;">
@@ -65,12 +93,11 @@
             <div id="boards-container"></div>
         </div>
 
-        <!-- ИНТЕРАКТИВНЫЙ ЭКРАН ПОДГОТОВКИ -->
         <div id="prep-screen" class="screen-container" style="display: none;">
             <div class="game-header">
                 <div class="header-left"></div>
                 <div class="header-center">
-                    <div class="instructions" id="prep-instruction" style="margin:0;">Найди целое (самое большое число):</div>
+                    <div class="instructions" id="prep-instruction">Найди целое (самое большое число):</div>
                 </div>
                 <div class="header-right">
                     <button class="exit-btn-global" onpointerdown="resetPrepGame()">На главную 🏠</button>
@@ -127,7 +154,6 @@
                     </div>
                 </div>
 
-                <!-- Этап 4: Решение и Проверка -->
                 <div id="prep-phase4" class="prep-phase4">
                     <div class="p4-rule" id="p4-rule-text"></div>
                     

@@ -16,7 +16,7 @@ window.onload = () => {
     setInterval(() => {
         let storedCode = sessionStorage.getItem('userEnteredCode') || "";
         if (GLOBAL_PASSWORD !== "" && storedCode.toLowerCase() !== GLOBAL_PASSWORD.toLowerCase()) {
-            if (currentScreenId !== 'auth-screen') {
+            if (currentScreenId !== 'auth-screen' && currentScreenId !== 'admin-auth-screen' && currentScreenId !== 'admin-dashboard-screen') {
                 initApp();
             }
         }
@@ -25,7 +25,7 @@ window.onload = () => {
 
 function showScreen(id) {
     currentScreenId = id;
-    const screens = ['start-screen', 'setup-screen', 'game-screen', 'result-screen', 'auth-screen', 'prep-screen'];
+    const screens = ['start-screen', 'setup-screen', 'game-screen', 'result-screen', 'auth-screen', 'prep-screen', 'admin-auth-screen', 'admin-dashboard-screen'];
     screens.forEach(s => {
         let el = document.getElementById(s);
         if (el) el.style.display = (s === id) ? 'flex' : 'none';
@@ -59,6 +59,25 @@ function checkAccessCode() {
         setTimeout(() => { errMsg.style.opacity = '0'; }, 3000);
     }
 }
+
+/* --- ЛОГИКА АДМИНИСТРАТОРА --- */
+function showAdminAuth() {
+    document.getElementById('admin-code-input').value = '';
+    document.getElementById('admin-error-msg').style.opacity = '0';
+    showScreen('admin-auth-screen');
+}
+
+function checkAdminCode() {
+    let input = document.getElementById('admin-code-input').value.trim();
+    if (input === 'root') {
+        showScreen('admin-dashboard-screen');
+    } else {
+        let errMsg = document.getElementById('admin-error-msg');
+        errMsg.style.opacity = '1';
+        setTimeout(() => { errMsg.style.opacity = '0'; }, 3000);
+    }
+}
+/* ----------------------------- */
 
 function showSetupScreen() { showScreen('setup-screen'); }
 
@@ -133,7 +152,6 @@ function generateQuestion() {
 function resetGame() {
     if (battleTimerInterval) clearInterval(battleTimerInterval);
     
-    // Защита от ошибок при удалении эвент-лиссенеров
     if (typeof window.dragMove === "function") window.removeEventListener('pointermove', window.dragMove);
     if (typeof window.endDrag === "function") window.removeEventListener('pointerup', window.endDrag);
     if (typeof window.checkDragMove === "function") window.removeEventListener('pointermove', window.checkDragMove);
